@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: credit
+
+  config:
+    import: "optional:configserver:${CONFIG_SERVICE_URL:http://localhost:9999}"
