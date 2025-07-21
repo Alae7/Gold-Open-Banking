@@ -47,6 +47,21 @@ public class CompteController {
     }
 
 
+    @PutMapping("/activate/{rib}")
+    public String activationCompte(@PathVariable("rib") Long rib) {
+
+        return compteService.activate(rib);
+
+    }
+
+    @PutMapping("/deactivate/{rib}")
+    public String deactivateCompte(@PathVariable("rib") Long rib) {
+
+        return compteService.deactivate(rib);
+
+    }
+
+
     @DeleteMapping("/{rib}")
     public String delete(@PathVariable("rib") Long rib) {
 

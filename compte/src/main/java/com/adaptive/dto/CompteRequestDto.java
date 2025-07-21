@@ -12,6 +12,7 @@ import lombok.*;
 public class CompteRequestDto {
 
     private String  banqueUuid;
+    private String  typeCompte;
     private String  customerUuid;
 
 }

@@ -29,8 +29,8 @@ public class Compte extends BaseModel {
     @PrePersist
     public void prePersist() {
         this.setDeleted(false);
+        this.setStatut("PENDING");
         this.solde = 0.00;
-        this.numCompte = Utils.generatorNumerousCompte();
     }
 
 }

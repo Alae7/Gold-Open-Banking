@@ -16,6 +16,10 @@ public interface CompteService {
 
     String update(Long rib, Transaction transaction);
 
+    String activate(Long rib);
+
+    String deactivate(Long rib);
+
     String findCustomerUuidByRib(Long rib);
 
     String delete(Long rib);

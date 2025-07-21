@@ -1,6 +1,5 @@
 package com.adaptive.model;
 
-
 import lombok.*;
 
 @AllArgsConstructor
@@ -8,9 +7,10 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class RIB {
+@ToString
+public class NotificationRequestDto {
 
-    private Long rib;
-    private int cle;
+    private Long compteRib;
+    private String notificationType;
 
 }

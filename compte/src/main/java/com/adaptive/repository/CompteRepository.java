@@ -2,6 +2,7 @@ package com.adaptive.repository;
 
 
 import com.adaptive.entity.Compte;
+import com.adaptive.model.Banque;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,5 +14,6 @@ public interface CompteRepository extends JpaRepository<Compte, Long> {
     List<Compte> findAllByIsDeletedFalse();
     List<Compte> findByBanqueUuid(String banqueUuid);
     String findCustomerUuidByRib(Long rib);
+    boolean existsByNumCompte(Long numCompte);
 
 }

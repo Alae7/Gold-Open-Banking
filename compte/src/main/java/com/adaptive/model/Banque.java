@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class banque {
+public class Banque {
 
     private String banqueUuid;
     private String codeBanque;

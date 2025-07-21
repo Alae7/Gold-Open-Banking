@@ -8,9 +8,9 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class RIB {
+public class BanqueModel {
 
-    private Long rib;
-    private int cle;
+    private String banqueUuid;
+    private String codeBanque;
 
 }
