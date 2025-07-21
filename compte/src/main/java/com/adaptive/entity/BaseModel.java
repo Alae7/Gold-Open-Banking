@@ -14,7 +14,6 @@ import jakarta.persistence.Id;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Objects;
 @MappedSuperclass
 @Data
@@ -42,8 +41,8 @@ public abstract class BaseModel implements Serializable {
     @Column(name = "is_deleted", nullable = true,columnDefinition = "boolean default false")
     private boolean isDeleted;
 
-    @Column(name = "is_statut", nullable = true,columnDefinition = "boolean default true")
-    private boolean isStatut;
+    @Column(name = "statut", nullable = true)
+    private String Statut;
 
     @CreationTimestamp
     private LocalDateTime createDateTime;

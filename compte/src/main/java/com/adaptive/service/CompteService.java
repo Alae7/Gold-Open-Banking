@@ -2,6 +2,7 @@ package com.adaptive.service;
 
 import com.adaptive.dto.CompteRequestDto;
 import com.adaptive.dto.CompteResponseDto;
+import com.adaptive.model.Transaction;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface CompteService {
 
     CompteResponseDto create(CompteRequestDto compteRequestDto);
 
-    String update(Long rib, Double amount);
+    String update(Long rib, Transaction transaction);
 
     String findCustomerUuidByRib(Long rib);
 

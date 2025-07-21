@@ -5,6 +5,7 @@ import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.entity.Transaction;
 import com.adaptive.model.CompteResponseDto;
 import com.adaptive.model.NotificationRequestDto;
+import com.adaptive.model.Status;
 import com.adaptive.openFeinController.CompteFeinClient;
 
 import java.nio.charset.StandardCharsets;
@@ -21,18 +22,34 @@ public class Utils {
     private static CompteFeinClient compteFeinClient;
 
 
-    public static String doTransaction(TransactionRequestDto transactionRequestDto){
+    public static Status doTransaction(TransactionRequestDto transactionRequestDto){
 
         CompteResponseDto sourceCompte = compteFeinClient.findByRib(transactionRequestDto.getSourceRib());
-        if(!verifySold(sourceCompte, transactionRequestDto.getAmount())){
+        CompteResponseDto targetCompte = compteFeinClient.findByRib(transactionRequestDto.getTargetRib());
+        if(sourceCompte == null){
+            Status status = new Status();
+            status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
+            return status;
+        }else if(targetCompte == null){
 
-            return "REFUSED";
+            Status status = new Status();
+            status.setStatutSourceRib("targetRib : " + transactionRequestDto.getTargetRib() + " not found");
+            return status;
 
+        }else if(!verifySold(sourceCompte, transactionRequestDto.getAmount())){
+
+            Status status = new Status();
+            status.setStatutSourceRib("REFUSED");
+            status.setStatutTargetRib("REFUSED");
+            return status;
+
+        }else {
+            Status status = new Status();
+
+            status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
+            status.setStatutTargetRib(compteFeinClient.versement(transactionRequestDto.getTargetRib(), transactionRequestDto.getAmount()));
+            return status;
         }
-
-        compteFeinClient.versement(transactionRequestDto.getSourceRib(), - transactionRequestDto.getAmount());
-        compteFeinClient.versement(transactionRequestDto.getTargetRib(), transactionRequestDto.getAmount());
-        return "ACCEPTED";
 
     }
 

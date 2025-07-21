@@ -18,6 +18,8 @@ public class Compte extends BaseModel {
 
     private String  customerUuid;
 
+    private String  typeCompte;
+
     @Column(nullable = false, unique = true)
     private Long numCompte;
 
@@ -27,7 +29,6 @@ public class Compte extends BaseModel {
     @PrePersist
     public void prePersist() {
         this.setDeleted(false);
-        this.setStatut(true);
         this.solde = 0.00;
         this.numCompte = Utils.generatorNumerousCompte();
     }

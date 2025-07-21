@@ -15,6 +15,7 @@ public class CompteResponseDto {
     private Double  solde;
     private Long numCompte;
     private Long rib;
+    private String  typeCompte;
 
 
 }

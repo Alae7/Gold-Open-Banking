@@ -2,6 +2,7 @@ package com.adaptive.controller;
 
 import com.adaptive.dto.CompteRequestDto;
 import com.adaptive.dto.CompteResponseDto;
+import com.adaptive.model.Transaction;
 import com.adaptive.service.CompteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -54,8 +55,8 @@ public class CompteController {
     }
 
     @PutMapping("/{rib}")
-    public String versement(@PathVariable("rib") Long rib, @RequestBody Double amount) {
-        return compteService.update(rib, amount);
+    public String versement(@PathVariable("rib") Long rib, @RequestBody Transaction transaction) {
+        return compteService.update(rib, transaction);
     }
 
 }

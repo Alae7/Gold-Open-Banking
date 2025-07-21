@@ -5,12 +5,15 @@ import com.adaptive.dto.CompteRequestDto;
 import com.adaptive.dto.CompteResponseDto;
 import com.adaptive.entity.Compte;
 import com.adaptive.mapper.CompteMapper;
+import com.adaptive.model.Transaction;
 import com.adaptive.repository.CompteRepository;
+import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -40,8 +43,36 @@ public class CompteServiceImpl implements CompteService {
     }
 
     @Override
-    public String update(Long rib, Double amount) {
-        return "";
+    public String update(Long rib , Transaction transaction) {
+
+        Compte compte = compteRepository.findByRib(rib);
+        if (compte != null) {
+            if ( transaction.getAmount() > 0){
+                if (Utils.detectAnomaly(compte.getTypeCompte(),transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(),transaction.getTransactionType().toUpperCase())){
+                        // anomaly here
+                    compte.setSolde(compte.getSolde() + transaction.getAmount());
+                    compte.setStatut("DEACTIVATE");
+                    compteRepository.save(compte);
+
+                    return "success";
+                }
+                else{
+
+                    compte.setSolde(compte.getSolde() + transaction.getAmount());
+                    compteRepository.save(compte);
+                    return "success";
+
+                }
+            }else {
+
+                compte.setSolde(compte.getSolde() + transaction.getAmount());
+                compteRepository.save(compte);
+                return  "success";
+
+            }
+        }
+
+        return " compte not found ";
     }
 
     @Override

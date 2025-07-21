@@ -58,12 +58,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDto create(TransactionRequestDto transactionRequestDto) {
 
         Transaction transaction = transactionMapper.toTransaction(transactionRequestDto);
-        String result = Utils.doTransaction(transactionRequestDto);
-        switch (result) {
-            case "ACCEPTED" -> transaction.setStatut("ACCEPTED");
-            case "REFUSED" -> transaction.setStatut("REFUSED");
-            default -> throw new IllegalArgumentException("Invalid Transaction");
-        }
+        transaction.setStatut(Utils.doTransaction(transactionRequestDto).getStatutSourceRib());
         transactionRepository.save(transaction);
 
         NotificationRequestDto notificationRequestDto = Utils.createNotification(transaction);
