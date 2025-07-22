@@ -1,8 +1,6 @@
-package com.adaptive.entity;
+package com.adaptive.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,10 +8,9 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-@Entity
-public class Product extends BaseModel {
+@ToString
+public class ProductResponseDto {
 
-    @Column(nullable = false)
     private Double  montantDemande;
 
     private Integer duree;
@@ -23,5 +20,8 @@ public class Product extends BaseModel {
     private Double tauxInteret;
 
     private Double  remboursement;
+
+    private String uuid;
+
 
 }

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class CompteResponseDto {
+public class CreditResponseDto {
 
     private String  customerUuid;
     private Double  solde;

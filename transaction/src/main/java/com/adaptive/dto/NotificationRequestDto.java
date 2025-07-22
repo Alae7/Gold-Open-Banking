@@ -1,8 +1,6 @@
-package com.adaptive.model;
+package com.adaptive.dto;
 
 import lombok.*;
-
-import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor

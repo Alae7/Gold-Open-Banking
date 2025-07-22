@@ -1,11 +1,11 @@
 package com.adaptive.service;
 
 
+import com.adaptive.dto.NotificationRequestDto;
 import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.dto.TransactionResponseDto;
 import com.adaptive.entity.Transaction;
 import com.adaptive.mapper.TransactionMapper;
-import com.adaptive.model.NotificationRequestDto;
 import com.adaptive.repository.TransactionRepository;
 import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
@@ -27,6 +27,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Autowired
     private TransactionMapper transactionMapper;
+
+    @Autowired
+    private Utils utils;
 
 
     @Override
@@ -58,7 +61,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponseDto create(TransactionRequestDto transactionRequestDto) {
 
         Transaction transaction = transactionMapper.toTransaction(transactionRequestDto);
-        transaction.setStatut(Utils.doTransaction(transactionRequestDto).getStatutSourceRib());
+        transaction.setStatut(utils.doTransaction(transactionRequestDto).getStatutSourceRib());
         transactionRepository.save(transaction);
 
         NotificationRequestDto notificationRequestDto = Utils.createNotification(transaction);

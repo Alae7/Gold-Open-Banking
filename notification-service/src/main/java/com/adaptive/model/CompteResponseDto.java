@@ -1,4 +1,4 @@
-package com.adaptive.dto;
+package com.adaptive.model;
 
 
 import lombok.*;
@@ -20,6 +20,8 @@ public class CompteResponseDto {
     private String  typeCompte;
     private String Statut;
     private LocalDateTime createDateTime;
+
+
 
 
 }

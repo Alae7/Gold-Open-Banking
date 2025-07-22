@@ -1,12 +1,14 @@
 package com.adaptive.utils;
 
 
+import com.adaptive.dto.NotificationRequestDto;
 import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.entity.Transaction;
 import com.adaptive.model.CompteResponseDto;
-import com.adaptive.model.NotificationRequestDto;
 import com.adaptive.model.Status;
 import com.adaptive.openFeinController.CompteFeinClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -14,15 +16,16 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.UUID;
 
+@Component
 public class Utils {
 
 
 
+    @Autowired
+    private  CompteFeinClient compteFeinClient;
 
-    private static CompteFeinClient compteFeinClient;
 
-
-    public static Status doTransaction(TransactionRequestDto transactionRequestDto){
+    public Status doTransaction(TransactionRequestDto transactionRequestDto){
 
         CompteResponseDto sourceCompte = compteFeinClient.findByRib(transactionRequestDto.getSourceRib());
         CompteResponseDto targetCompte = compteFeinClient.findByRib(transactionRequestDto.getTargetRib());

@@ -28,6 +28,9 @@ public class Customer extends BaseModel {
     @Field
     private String phone;
 
+    @Field
+    private String cin;
+
     @DBRef
     private Address address;
 

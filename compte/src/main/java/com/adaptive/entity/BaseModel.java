@@ -1,7 +1,6 @@
 package com.adaptive.entity;
 
 
-import com.adaptive.utils.Utils;
 import jakarta.annotation.PreDestroy;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

@@ -2,13 +2,10 @@ package com.adaptive.entity;
 
 
 import com.adaptive.utils.Utils;
-import jakarta.annotation.PreDestroy;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.Id;
-
 
 
 import java.io.Serial;
@@ -17,14 +14,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Objects;
 
-@Setter
-@Getter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@MappedSuperclass
 @Data
 public abstract class BaseModel implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -34,20 +26,20 @@ public abstract class BaseModel implements Serializable {
     @Column
     private Long id;
 
-    @Column(name = "uuid", nullable = true,unique = true)
+    @Column(name = "uuid",unique = true)
     private String uuid;
 
-    @Column(name = "code", nullable = true)
+    @Column(name = "code")
     private String code;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "is_deleted", nullable = true,columnDefinition = "boolean default false")
+    @Column(name = "is_deleted",columnDefinition = "boolean default false")
     private boolean isDeleted;
 
-    @Column(name = "is_statut", nullable = true,columnDefinition = "boolean default true")
-    private boolean isStatut;
+    @Column(name = "statut")
+    private CreditStatus status;
 
     @CreationTimestamp
     private LocalDateTime createDateTime;
@@ -58,23 +50,9 @@ public abstract class BaseModel implements Serializable {
     @PrePersist
     public void prePersist() {
         this.isDeleted = false;
-        this.isStatut = true;
+        this.status = CreditStatus.DEMANDE;
     }
 
-    @PreUpdate
-    public void preUpdate() {
-
-    }
-
-    @PreRemove
-    public void preRemove() {
-
-    }
-
-    @PreDestroy
-    public void preDestroy() {
-
-    }
 
     @PostPersist
     public void postPersist() {

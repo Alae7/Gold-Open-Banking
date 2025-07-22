@@ -11,13 +11,13 @@ import lombok.*;
 @ToString
 public class ProductResponseDto {
 
-    private Double  price;
+    private Double  montantDemande;
 
-    private int times;
+    private Integer duree;
 
     private String  compteType;
 
-    private int  taux;
+    private Double tauxInteret;
 
     private Double  remboursement;
 

@@ -10,7 +10,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     Product findByUuid(String uuid);
-    List<Product> findAllByIsDeletedFalse();
     List<Product> findByCompteType(String compteType);
 
 }

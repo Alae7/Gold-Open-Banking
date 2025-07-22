@@ -3,10 +3,10 @@ package com.adaptive.service;
 
 import com.adaptive.dto.CompteRequestDto;
 import com.adaptive.dto.CompteResponseDto;
+import com.adaptive.dto.Notification_CompteRequestDto;
 import com.adaptive.entity.Compte;
 import com.adaptive.mapper.CompteMapper;
 import com.adaptive.model.Banque;
-import com.adaptive.model.NotificationRequestDto;
 import com.adaptive.model.RIB;
 import com.adaptive.model.Transaction;
 import com.adaptive.openFeinController.BanqueFeinClient;
@@ -25,7 +25,7 @@ import java.util.List;
 public class CompteServiceImpl implements CompteService {
 
     @Autowired
-    private KafkaTemplate<String, NotificationRequestDto> kafkaTemplate;
+    private KafkaTemplate<String, Notification_CompteRequestDto> kafkaTemplate;
 
     @Autowired
     private BanqueFeinClient banqueFeinClient;
@@ -58,7 +58,7 @@ public class CompteServiceImpl implements CompteService {
         compte.setCle(rib.getCle());
         compteRepository.save(compte);
 
-        NotificationRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
+        Notification_CompteRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
         kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
 
         return compteMapper.toResponseDto(compte);
@@ -110,7 +110,7 @@ public class CompteServiceImpl implements CompteService {
             compte.setStatut("ACTIVATE");
             compteRepository.save(compte);
 
-            NotificationRequestDto notificationRequestDtos = Utils.activateNotificationRequestDto(compte);
+            Notification_CompteRequestDto notificationRequestDtos = Utils.activateNotificationRequestDto(compte);
             kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
 
             message = "success";
@@ -134,7 +134,7 @@ public class CompteServiceImpl implements CompteService {
             compte.setStatut("DEACTIVATE");
             compteRepository.save(compte);
 
-            NotificationRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);
+            Notification_CompteRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);
             kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
             message = "success";
 

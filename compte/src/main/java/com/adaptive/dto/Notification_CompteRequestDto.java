@@ -1,4 +1,4 @@
-package com.adaptive.model;
+package com.adaptive.dto;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class NotificationRequestDto {
+public class Notification_CompteRequestDto {
 
     private Long compteRib;
     private String notificationType;

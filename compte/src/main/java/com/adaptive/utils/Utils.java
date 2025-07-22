@@ -1,8 +1,8 @@
 package com.adaptive.utils;
 
 
+import com.adaptive.dto.Notification_CompteRequestDto;
 import com.adaptive.entity.Compte;
-import com.adaptive.model.NotificationRequestDto;
 import com.adaptive.model.RIB;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -91,15 +91,15 @@ public class Utils {
 
 
     /**
-     * Crée un objet NotificationRequestDto pour la création de compte.
+     * Crée un objet Notification_CompteRequestDto pour la création de compte.
      *
      * @param compte le compte concerné
-     * @return un objet NotificationRequestDto avec type "CREATION"
+     * @return un objet Notification_CompteRequestDto avec type "CREATION"
      */
 
-    public static NotificationRequestDto createNotificationRequestDto(Compte compte){
+    public static Notification_CompteRequestDto createNotificationRequestDto(Compte compte){
 
-        NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+        Notification_CompteRequestDto notificationRequestDto = new Notification_CompteRequestDto();
         notificationRequestDto.setNotificationType("CREATION");
         notificationRequestDto.setCompteRib(compte.getRib());
 
@@ -109,15 +109,15 @@ public class Utils {
 
 
     /**
-     * Crée un objet NotificationRequestDto pour l'activation de compte.
+     * Crée un objet Notification_CompteRequestDto pour l'activation de compte.
      *
      * @param compte le compte concerné
-     * @return un objet NotificationRequestDto avec type "ACTIVATION"
+     * @return un objet Notification_CompteRequestDto avec type "ACTIVATION"
      */
 
-    public static NotificationRequestDto activateNotificationRequestDto(Compte compte){
+    public static Notification_CompteRequestDto activateNotificationRequestDto(Compte compte){
 
-        NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+        Notification_CompteRequestDto notificationRequestDto = new Notification_CompteRequestDto();
         notificationRequestDto.setNotificationType("ACTIVATION");
         notificationRequestDto.setCompteRib(compte.getRib());
 
@@ -127,15 +127,15 @@ public class Utils {
 
 
     /**
-     * Crée un objet NotificationRequestDto pour la désactivation de compte.
+     * Crée un objet Notification_CompteRequestDto pour la désactivation de compte.
      *
      * @param compte le compte concerné
-     * @return un objet NotificationRequestDto avec type "DEACTIVATION"
+     * @return un objet Notification_CompteRequestDto avec type "DEACTIVATION"
      */
 
-    public static NotificationRequestDto deactivateNotificationRequestDto(Compte compte){
+    public static Notification_CompteRequestDto deactivateNotificationRequestDto(Compte compte){
 
-        NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
+        Notification_CompteRequestDto notificationRequestDto = new Notification_CompteRequestDto();
         notificationRequestDto.setNotificationType("DEACTIVATION");
         notificationRequestDto.setCompteRib(compte.getRib());
 
