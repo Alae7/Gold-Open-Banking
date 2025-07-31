@@ -13,9 +13,8 @@ public class CreditRequestDto {
 
     private String productUuid;
 
-    private String customerUuid;
+    private Long compteRib;
 
-    private Double remboursement;
 
 
 }

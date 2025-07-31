@@ -1,10 +1,9 @@
-package com.adaptive.dto;
+package com.adaptive.model;
 
 
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,15 +11,15 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class CreditResponseDto {
+public class CompteResponseDto {
 
-    private Long  compteRib;
+    private String  customerUuid;
     private Double  solde;
+    private Long numCompte;
     private Long rib;
     private String  typeCompte;
     private String Statut;
     private LocalDateTime createDateTime;
-    private List<EcheanceResponseDto> echeanceResponseDtos;
 
 
 }

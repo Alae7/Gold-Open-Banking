@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CreditRepository extends JpaRepository<Credit, Long> {
 
-    List<Credit> findByCustomerUuid(String customerUuid);
+    List<Credit> findByCompteRib(Long compteRib);
     Credit findByUuid(String uuid);
 
 }

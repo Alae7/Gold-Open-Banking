@@ -26,6 +26,6 @@ public class Credit extends BaseModel {
 
     private LocalDate dateFin;
 
-    private String customerUuid;
+    private Long compteRib;
 
 }

@@ -1,6 +1,5 @@
-package com.adaptive.entity;
+package com.adaptive.dto;
 
-import jakarta.persistence.Entity;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -10,8 +9,8 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @Setter
-@Entity
-public class Echeance extends BaseModel{
+@ToString
+public class EcheanceResponseDto {
 
     private int numero;
 
@@ -19,9 +18,7 @@ public class Echeance extends BaseModel{
 
     private double montant;
 
-    private boolean paye = false;
-
-    private String creditUuid;
+    private boolean paye;
 
     private Long rib;
 

@@ -28,32 +28,49 @@ public class Utils {
     public Status doTransaction(TransactionRequestDto transactionRequestDto){
 
         CompteResponseDto sourceCompte = compteFeinClient.findByRib(transactionRequestDto.getSourceRib());
-        CompteResponseDto targetCompte = compteFeinClient.findByRib(transactionRequestDto.getTargetRib());
-        if(sourceCompte == null){
-            Status status = new Status();
-            status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
-            return status;
-        }else if(targetCompte == null){
 
-            Status status = new Status();
-            status.setStatutSourceRib("targetRib : " + transactionRequestDto.getTargetRib() + " not found");
-            return status;
+        if(transactionRequestDto.getTargetRib() != null) {
 
-        }else if(!verifySold(sourceCompte, transactionRequestDto.getAmount())){
+            CompteResponseDto targetCompte = compteFeinClient.findByRib(transactionRequestDto.getTargetRib());
 
-            Status status = new Status();
-            status.setStatutSourceRib("REFUSED");
-            status.setStatutTargetRib("REFUSED");
-            return status;
+            if (sourceCompte == null) {
+                Status status = new Status();
+                status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
+                return status;
+            } else if (targetCompte == null) {
 
+                Status status = new Status();
+                status.setStatutSourceRib("targetRib : " + transactionRequestDto.getTargetRib() + " not found");
+                return status;
+
+            } else if (!verifySold(sourceCompte, transactionRequestDto.getAmount())) {
+
+                Status status = new Status();
+                status.setStatutSourceRib("REFUSED");
+                status.setStatutTargetRib("REFUSED");
+                return status;
+
+            } else {
+                Status status = new Status();
+
+                status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
+                status.setStatutTargetRib(compteFeinClient.versement(transactionRequestDto.getTargetRib(), transactionRequestDto.getAmount()));
+                return status;
+
+            }
         }else {
+
+            if (sourceCompte == null) {
+                Status status = new Status();
+                status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
+                return status;
+            }
+
             Status status = new Status();
-
             status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
-            status.setStatutTargetRib(compteFeinClient.versement(transactionRequestDto.getTargetRib(), transactionRequestDto.getAmount()));
             return status;
-        }
 
+        }
     }
 
 
@@ -103,7 +120,7 @@ public class Utils {
     public static NotificationRequestDto createNotification(Transaction transaction){
 
         NotificationRequestDto notificationRequestDto = new NotificationRequestDto();
-        notificationRequestDto.setNotificationType(transaction.getType());
+        notificationRequestDto.setNotificationType(transaction.getType().toString());
         notificationRequestDto.setTransactionUuid(transaction.getUuid());
 
         return notificationRequestDto;

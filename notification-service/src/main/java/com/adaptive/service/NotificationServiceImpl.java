@@ -34,7 +34,7 @@ public class NotificationServiceImpl{
     private Utils utils;
 
 
-    @KafkaListener(topics = "notification_topic", groupId = "my-gold")
+    @KafkaListener(topics = "transaction_topic", groupId = "my-gold")
     public void processTransactionEvent(@Header(KafkaHeaders.RECEIVED_KEY) String key, @Payload NotificationRequestDto notificationRequestDto) {
         System.out.println("Received Key: " + key + ", notification: " + notificationRequestDto);
 
@@ -57,7 +57,7 @@ public class NotificationServiceImpl{
 
 
     @KafkaListener(topics = "compte_topic", groupId = "my-gold")
-    public void processNotificationEvent(@Header(KafkaHeaders.RECEIVED_KEY) String key, @Payload Notification_CompteRequestDto notificationCompteRequestDto) {
+    public void processCompteEvent(@Header(KafkaHeaders.RECEIVED_KEY) String key, @Payload Notification_CompteRequestDto notificationCompteRequestDto) {
 
         CompteResponseDto compteResponseDto = utils.getCompte(notificationCompteRequestDto.getCompteRib());
         CustomerResponseDto customerResponseDto = utils.getClient(notificationCompteRequestDto.getCompteRib());
@@ -77,6 +77,20 @@ public class NotificationServiceImpl{
 
     }
 
+    @KafkaListener(topics = "anomaly_topic", groupId = "my-gold")
+    public void processAnomalyEvent(@Header(KafkaHeaders.RECEIVED_KEY) String key, @Payload Notification_CompteRequestDto notificationCompteRequestDto) {
+
+        CompteResponseDto compteResponseDto = utils.getCompte(notificationCompteRequestDto.getCompteRib());
+        CustomerResponseDto customerResponseDto = utils.getClient(notificationCompteRequestDto.getCompteRib());
+        NotificationCompte notificationCompte = utils.createNotificationCompte(notificationCompteRequestDto);
+
+        notificationCompte.setStatus(utils.sendAnomalyMessage(customerResponseDto,compteResponseDto));
+
+        notificationCompteRepository.save(notificationCompte);
+        System.out.println(notificationCompte.getStatus());
+
+
+    }
 
 
 }

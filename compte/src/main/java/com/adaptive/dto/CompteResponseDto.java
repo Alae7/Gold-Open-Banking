@@ -1,6 +1,7 @@
 package com.adaptive.dto;
 
 
+import com.adaptive.entity.TypeCompte;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class CompteResponseDto {
     private Double  solde;
     private Long numCompte;
     private Long rib;
-    private String  typeCompte;
+    private TypeCompte typeCompte;
     private String Statut;
     private LocalDateTime createDateTime;
 

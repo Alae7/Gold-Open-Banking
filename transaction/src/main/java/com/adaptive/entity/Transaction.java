@@ -15,7 +15,7 @@ public class Transaction extends BaseModel {
 
     private Double amount;
 
-    private String type;
+    private TypeTransaction type;
 
     private Long targetRib;
 

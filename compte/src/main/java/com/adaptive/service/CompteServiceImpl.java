@@ -72,12 +72,13 @@ public class CompteServiceImpl implements CompteService {
         Compte compte = compteRepository.findByRib(rib);
         if (compte != null) {
             if ( transaction.getAmount() > 0){
-                if (Utils.detectAnomaly(compte.getTypeCompte(),transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(),transaction.getTransactionType().toUpperCase())){
+                if (Utils.detectAnomaly(compte.getTypeCompte().toString(),transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(),transaction.getTransactionType().toUpperCase())){
                         // anomaly here
                     compte.setSolde(compte.getSolde() + transaction.getAmount());
                     compte.setStatut("DEACTIVATE");
                     compteRepository.save(compte);
-
+                    Notification_CompteRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);
+                    kafkaTemplate.send("anomaly_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
                     return "success";
                 }
                 else{

@@ -1,6 +1,7 @@
 package com.adaptive.dto;
 
 
+import com.adaptive.entity.TypeTransaction;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ public class TransactionResponseDto {
 
     private Double amount;
 
-    private String type;
+    private TypeTransaction type;
 
     private Long targetRib;
 

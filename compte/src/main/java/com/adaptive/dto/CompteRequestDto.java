@@ -1,6 +1,7 @@
 package com.adaptive.dto;
 
 
+import com.adaptive.entity.TypeCompte;
 import lombok.*;
 
 @AllArgsConstructor
@@ -12,7 +13,7 @@ import lombok.*;
 public class CompteRequestDto {
 
     private String  banqueUuid;
-    private String  typeCompte;
+    private TypeCompte typeCompte;
     private String  customerUuid;
 
 }

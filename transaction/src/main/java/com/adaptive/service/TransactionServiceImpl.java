@@ -66,7 +66,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         NotificationRequestDto notificationRequestDto = Utils.createNotification(transaction);
 
-        kafkaTemplate.send("notification_topic",notificationRequestDto.getNotificationType() ,notificationRequestDto);
+        kafkaTemplate.send("transaction_topic",notificationRequestDto.getNotificationType() ,notificationRequestDto);
         return transactionMapper.toResponseDto(transaction);
     }
 
