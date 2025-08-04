@@ -1,10 +1,14 @@
 package com.adaptive.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,4 +32,7 @@ public class Credit extends BaseModel {
 
     private Long compteRib;
 
+    @OneToMany(mappedBy = "credit" , cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Echeance> echeances;
 }

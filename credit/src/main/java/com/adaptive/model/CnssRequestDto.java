@@ -1,4 +1,4 @@
-package com.adaptive.dto;
+package com.adaptive.model;
 
 
 import lombok.*;
@@ -9,15 +9,9 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class CreditRequestDto {
-
-    private String productUuid;
-
-    private Long compteRib;
+public class CnssRequestDto {
 
     private String  cin;
-
-    private int  age;
 
     private String  lastNam;
 
@@ -30,7 +24,5 @@ public class CreditRequestDto {
     private double salaire;
 
     private Long numInscription;
-
-
 
 }

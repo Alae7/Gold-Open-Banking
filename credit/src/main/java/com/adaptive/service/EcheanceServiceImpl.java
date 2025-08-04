@@ -3,6 +3,11 @@ package com.adaptive.service;
 import com.adaptive.dto.EcheanceResponseDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.Echeance;
+import com.adaptive.entity.TypeTransaction;
+import com.adaptive.mapper.EcheanceMapper;
+import com.adaptive.model.TransactionRequestDto;
+import com.adaptive.model.TransactionResponseDto;
+import com.adaptive.openFeinController.TransactionFeinClient;
 import com.adaptive.repository.CreditRepository;
 import com.adaptive.repository.EcheanceRepository;
 import com.adaptive.utils.Utils;
@@ -25,16 +30,17 @@ public class EcheanceServiceImpl implements EcheanceService {
     private CreditRepository creditRepository;
 
     @Autowired
+    private EcheanceMapper echeanceMapper;
+
+    @Autowired
+    private TransactionFeinClient transactionFeinClient;
+
+    @Autowired
     private Utils utils;
 
     @Override
     public List<EcheanceResponseDto> findByCreditUuid(String creditUuid) {
-        return List.of();
-    }
-
-    @Override
-    public void create(Credit credit) {
-
+        return echeanceMapper.toResponseDtoList(echeanceRepository.findByCreditUuid(creditUuid));
     }
 
     @Scheduled(cron = "0 0 1 * * *")
@@ -44,7 +50,16 @@ public class EcheanceServiceImpl implements EcheanceService {
 
         for (Echeance echeance : list) {
 
-            Credit credit = creditRepository.findByUuid(echeance.getCreditUuid());
+            Credit credit = creditRepository.findByUuid(echeance.getCredit().getUuid());
+            TransactionRequestDto transactionRequestDto = new TransactionRequestDto();
+
+            transactionRequestDto.setAmount(credit.getRemboursement());
+            transactionRequestDto.setType(TypeTransaction.REMBOURSEMENT);
+            transactionRequestDto.setSourceRib(echeance.getRib());
+
+            TransactionResponseDto transactionResponseDto = transactionFeinClient.createTransaction(transactionRequestDto);
+            echeance.setPaye(transactionResponseDto.getStatus().equals("SUCCESS"));
+            echeanceRepository.save(echeance);
 
         }
 

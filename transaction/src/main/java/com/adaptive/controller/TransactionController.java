@@ -59,12 +59,4 @@ public class TransactionController {
 
     }
 
-
-    @DeleteMapping("/{uuid}")
-    public String delete(@PathVariable("uuid") String uuid) {
-
-        return transactionService.delete(uuid);
-
-    }
-
 }

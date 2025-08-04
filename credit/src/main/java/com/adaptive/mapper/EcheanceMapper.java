@@ -15,9 +15,9 @@ public interface EcheanceMapper {
 
     EcheanceMapper INSTANCE = Mappers.getMapper(EcheanceMapper.class);
 
-    EcheanceResponseDto toResponseDto(Echeance address);
+    EcheanceResponseDto toResponseDto(Echeance echeance);
 
-    List<EcheanceResponseDto> toResponseDtoList(List<Echeance> addresses);
+    List<EcheanceResponseDto> toResponseDtoList(List<Echeance> echeances);
 
 
 

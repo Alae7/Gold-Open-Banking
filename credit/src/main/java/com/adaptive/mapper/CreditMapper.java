@@ -1,9 +1,9 @@
 package com.adaptive.mapper;
 
-import com.adaptive.dto.CreditRequestDto;
 import com.adaptive.dto.CreditResponseDto;
 import com.adaptive.entity.Credit;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -13,6 +13,7 @@ public interface CreditMapper {
 
     CreditMapper INSTANCE = Mappers.getMapper(CreditMapper.class);
 
+    @Mapping(source = "echeances", target = "echeanceResponseDtos")
     CreditResponseDto toResponseDto(Credit credit);
 
     List<CreditResponseDto> toResponseDtoList(List<Credit> credits);

@@ -27,50 +27,59 @@ public class Utils {
 
     public Status doTransaction(TransactionRequestDto transactionRequestDto){
 
-        CompteResponseDto sourceCompte = compteFeinClient.findByRib(transactionRequestDto.getSourceRib());
+        Status status = new Status();
 
-        if(transactionRequestDto.getTargetRib() != null) {
+        CompteResponseDto source = compteFeinClient.findByRib(transactionRequestDto.getSourceRib());
 
-            CompteResponseDto targetCompte = compteFeinClient.findByRib(transactionRequestDto.getTargetRib());
+        if (source == null) {
+            status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
+            return status;
+        }
 
-            if (sourceCompte == null) {
-                Status status = new Status();
-                status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
-                return status;
-            } else if (targetCompte == null) {
-
-                Status status = new Status();
+        // Cas de virement
+        if (transactionRequestDto.getTargetRib() != null) {
+            CompteResponseDto target = compteFeinClient.findByRib(transactionRequestDto.getTargetRib());
+            if (target == null) {
                 status.setStatutSourceRib("targetRib : " + transactionRequestDto.getTargetRib() + " not found");
                 return status;
+            }
 
-            } else if (!verifySold(sourceCompte, transactionRequestDto.getAmount())) {
-
-                Status status = new Status();
+            if (!verifySold(source, transactionRequestDto.getAmount())) {
                 status.setStatutSourceRib("REFUSED");
                 status.setStatutTargetRib("REFUSED");
                 return status;
-
-            } else {
-                Status status = new Status();
-
-                status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
-                status.setStatutTargetRib(compteFeinClient.versement(transactionRequestDto.getTargetRib(), transactionRequestDto.getAmount()));
-                return status;
-
-            }
-        }else {
-
-            if (sourceCompte == null) {
-                Status status = new Status();
-                status.setStatutSourceRib("rib : " + transactionRequestDto.getSourceRib() + " not found");
-                return status;
             }
 
-            Status status = new Status();
+            // Débit source, crédit target
             status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
+            status.setStatutTargetRib(compteFeinClient.versement(transactionRequestDto.getTargetRib(), transactionRequestDto.getAmount()));
             return status;
-
         }
+
+        // Cas sans targetRib
+        switch (transactionRequestDto.getType()) {
+            case RETRAIT -> {
+                status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
+            }
+
+            case REMBOURSEMENT -> {
+                if (verifySoldCredit(source, transactionRequestDto.getAmount())) {
+                    status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), -transactionRequestDto.getAmount()));
+                } else {
+                    status.setStatutSourceRib("REFUSED");
+                }
+            }
+
+            case VERSEMENT -> {
+                status.setStatutSourceRib(compteFeinClient.versement(transactionRequestDto.getSourceRib(), transactionRequestDto.getAmount()));
+            }
+
+            default -> {
+                status.setStatutSourceRib("INVALID");
+            }
+        }
+
+        return status;
     }
 
 
@@ -115,6 +124,10 @@ public class Utils {
 
     private static boolean verifySold(CompteResponseDto compteResponseDto , Double amount){
         return compteResponseDto.getSolde() >= amount;
+    }
+
+    private static boolean verifySoldCredit(CompteResponseDto compteResponseDto , Double amount){
+        return compteResponseDto.getSolde() - amount >= 2000;
     }
 
     public static NotificationRequestDto createNotification(Transaction transaction){

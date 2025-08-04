@@ -1,4 +1,4 @@
-package com.adaptive.dto;
+package com.adaptive.model;
 
 
 import com.adaptive.entity.TypeTransaction;

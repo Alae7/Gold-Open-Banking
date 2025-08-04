@@ -4,14 +4,16 @@ import com.adaptive.dto.CreditRequestDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
-import com.adaptive.model.CompteResponseDto;
+import com.adaptive.model.CnssRequestDto;
 import com.adaptive.model.ProductResponseDto;
+import com.adaptive.model.TransactionResponseDto;
 import com.adaptive.openFeinController.CompteFeinClient;
 import com.adaptive.openFeinController.ProductFeinClient;
+import com.adaptive.repository.CreditRepository;
 import com.adaptive.repository.EcheanceRepository;
-import com.adaptive.service.EcheanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -30,7 +32,9 @@ public class Utils {
     private EcheanceRepository echeanceRepository;
 
     @Autowired
-    private CompteFeinClient comptefeinClient;
+    RestTemplate restTemplate;
+
+
 
     public static String getHashedUuid(Instant dateCreation, Long id) {
         UUID uuid = UUID.randomUUID(); // Generate a random UUID
@@ -72,18 +76,17 @@ public class Utils {
 
 
 
-    public void createEcheance(LocalDate dateDebut, int dure, double remboursement ,String creditUuid,Long rib) {
+    public void createEcheance(Credit credit) {
+        for (int i = 1; i <= credit.getDuree(); i++) {
 
-        for (int i = 1; i <= dure; i++) {
-
-            LocalDate dateRemboursement = dateDebut.plusMonths(i);
+            LocalDate dateRemboursement = credit.getDateDebut().plusMonths(i);
             Echeance  e = new Echeance();
-            e.setCreditUuid(creditUuid);
+            e.setCredit(credit);
             e.setDateEcheance(dateRemboursement);
-            e.setMontant(remboursement);
+            e.setMontant(credit.getRemboursement());
             e.setNumero(i);
             e.setPaye(false);
-            e.setRib(rib);
+            e.setRib(credit.getCompteRib());
             echeanceRepository.save(e);
 
         }
@@ -104,19 +107,27 @@ public class Utils {
         credit.setDuree(productResponseDto.getDuree());
         credit.setMontantDemande(productResponseDto.getMontantDemande());
         credit.setRemboursement(productResponseDto.getRemboursement());
-
         return credit;
     }
 
 
-    public boolean verifierSold(Double amount, Long rib){
+    public boolean kycCredit(CreditRequestDto creditRequestDto) {
 
-        CompteResponseDto compteResponseDto = comptefeinClient.findByRib(rib);
-        double verifier = compteResponseDto.getSolde() -  amount;
-        return verifier >= 2000;
+        CnssRequestDto cnssRequestDto = new CnssRequestDto();
+
+        cnssRequestDto.setCin(creditRequestDto.getCin());
+        cnssRequestDto.setSalaire(creditRequestDto.getSalaire());
+        cnssRequestDto.setFirstName(creditRequestDto.getFirstName());
+        cnssRequestDto.setLastNam(creditRequestDto.getLastNam());
+        cnssRequestDto.setNbrEnfant(creditRequestDto.getNbrEnfant());
+        cnssRequestDto.setNbrFemme(creditRequestDto.getNbrFemme());
+        cnssRequestDto.setNumInscription(creditRequestDto.getNumInscription());
+
+        String url = "http://localhost:4999/api/cnss";
+
+        return Boolean.TRUE.equals(restTemplate.postForObject(url, cnssRequestDto, Boolean.class));
 
     }
-
 
 
 

@@ -1,6 +1,6 @@
 package com.adaptive.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -21,8 +21,10 @@ public class Echeance extends BaseModel{
 
     private boolean paye = false;
 
-    private String creditUuid;
-
     private Long rib;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "credit_uuid", foreignKey = @ForeignKey(name = "echeance_foreignKey"))
+    private Credit credit;
 
 }
