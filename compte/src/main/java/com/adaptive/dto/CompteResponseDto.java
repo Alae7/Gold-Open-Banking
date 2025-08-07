@@ -1,6 +1,7 @@
 package com.adaptive.dto;
 
 
+import com.adaptive.entity.StatusCompte;
 import com.adaptive.entity.TypeCompte;
 import lombok.*;
 
@@ -19,7 +20,7 @@ public class CompteResponseDto {
     private Long numCompte;
     private Long rib;
     private TypeCompte typeCompte;
-    private String Statut;
+    private StatusCompte Statut;
     private LocalDateTime createDateTime;
 
 

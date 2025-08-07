@@ -10,7 +10,6 @@ import com.adaptive.model.TransactionResponseDto;
 import com.adaptive.openFeinController.TransactionFeinClient;
 import com.adaptive.repository.CreditRepository;
 import com.adaptive.repository.EcheanceRepository;
-import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,9 +33,6 @@ public class EcheanceServiceImpl implements EcheanceService {
 
     @Autowired
     private TransactionFeinClient transactionFeinClient;
-
-    @Autowired
-    private Utils utils;
 
     @Override
     public List<EcheanceResponseDto> findByCreditUuid(String creditUuid) {

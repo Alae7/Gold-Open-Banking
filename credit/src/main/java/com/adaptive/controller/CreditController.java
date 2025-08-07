@@ -37,11 +37,4 @@ public class CreditController {
 
     }
 
-    @PutMapping("/{uuid}")
-    public void changeStatusCredit(@PathVariable("uuid") String uuid, @RequestBody CreditStatus creditStatus) {
-
-        creditService.changeStatus(uuid, creditStatus);
-
-    }
-
 }

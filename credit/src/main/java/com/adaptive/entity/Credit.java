@@ -1,6 +1,7 @@
 package com.adaptive.entity;
 
 
+import com.adaptive.model.TypeCompte;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -31,6 +32,8 @@ public class Credit extends BaseModel {
     private LocalDate dateFin;
 
     private Long compteRib;
+
+    private TypeCompte typeCompte;
 
     @OneToMany(mappedBy = "credit" , cascade = CascadeType.ALL)
     @JsonIgnore

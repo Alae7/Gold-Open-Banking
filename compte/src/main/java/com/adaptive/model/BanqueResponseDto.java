@@ -1,7 +1,7 @@
-package com.adaptive.dto;
+package com.adaptive.model;
 
 
-import com.adaptive.dto.apidefinition.ApiDefinitionResponseDto;
+
 import lombok.*;
 
 import java.util.List;

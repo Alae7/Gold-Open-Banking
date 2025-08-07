@@ -2,7 +2,6 @@ package com.adaptive.repository;
 
 
 import com.adaptive.entity.Compte;
-import com.adaptive.model.Banque;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

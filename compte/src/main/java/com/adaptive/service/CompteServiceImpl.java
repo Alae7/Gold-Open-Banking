@@ -5,8 +5,9 @@ import com.adaptive.dto.CompteRequestDto;
 import com.adaptive.dto.CompteResponseDto;
 import com.adaptive.dto.Notification_CompteRequestDto;
 import com.adaptive.entity.Compte;
+import com.adaptive.entity.StatusCompte;
 import com.adaptive.mapper.CompteMapper;
-import com.adaptive.model.Banque;
+import com.adaptive.model.BanqueResponseDto;
 import com.adaptive.model.RIB;
 import com.adaptive.model.Transaction;
 import com.adaptive.openFeinController.BanqueFeinClient;
@@ -49,11 +50,11 @@ public class CompteServiceImpl implements CompteService {
     @Override
     public CompteResponseDto create(CompteRequestDto compteRequestDto) {
 
-        Banque banque = banqueFeinClient.getBanqueModel(compteRequestDto.getBanqueUuid());
+        BanqueResponseDto banque = banqueFeinClient.findByUuid(compteRequestDto.getBanqueUuid());
         Compte compte = compteMapper.toEntity(compteRequestDto);
 
         compte.setNumCompte(generateNumerousCompte());
-        RIB  rib = Utils.generateRib(compte.getNumCompte(),banque.getCodeBanque());
+        RIB  rib = Utils.generateRib(compte.getNumCompte(),banque.getCode());
         compte.setRib(rib.getRib());
         compte.setCle(rib.getCle());
         compteRepository.save(compte);
@@ -75,7 +76,7 @@ public class CompteServiceImpl implements CompteService {
                 if (Utils.detectAnomaly(compte.getTypeCompte().toString(),transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(),transaction.getTransactionType().toUpperCase())){
                         // anomaly here
                     compte.setSolde(compte.getSolde() + transaction.getAmount());
-                    compte.setStatut("DEACTIVATE");
+                    compte.setStatut(StatusCompte.DEACTIVATE);
                     compteRepository.save(compte);
                     Notification_CompteRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);
                     kafkaTemplate.send("anomaly_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
@@ -108,7 +109,7 @@ public class CompteServiceImpl implements CompteService {
 
         if (compte != null) {
 
-            compte.setStatut("ACTIVATE");
+            compte.setStatut(StatusCompte.ACTIVATE);
             compteRepository.save(compte);
 
             Notification_CompteRequestDto notificationRequestDtos = Utils.activateNotificationRequestDto(compte);
@@ -132,7 +133,7 @@ public class CompteServiceImpl implements CompteService {
 
         if (compte != null) {
 
-            compte.setStatut("DEACTIVATE");
+            compte.setStatut(StatusCompte.DEACTIVATE);
             compteRepository.save(compte);
 
             Notification_CompteRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);

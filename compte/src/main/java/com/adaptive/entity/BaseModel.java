@@ -41,7 +41,7 @@ public abstract class BaseModel implements Serializable {
     private boolean isDeleted;
 
     @Column(name = "statut", nullable = true)
-    private String Statut;
+    private StatusCompte Statut;
 
     @CreationTimestamp
     private LocalDateTime createDateTime;

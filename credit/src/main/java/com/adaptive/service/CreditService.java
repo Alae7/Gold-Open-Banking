@@ -14,6 +14,5 @@ public interface CreditService {
 
     CreditResponseDto create(CreditRequestDto creditRequestDto);
 
-    void changeStatus(String uuid, CreditStatus creditStatus);
 
 }

@@ -7,7 +7,7 @@ import com.adaptive.entity.NotificationCompte;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper( componentModel = "spring")
+@Mapper( componentModel = "spring",uses = {NotificationMapper.class})
 public interface NotificationMapper {
 
     NotificationMapper INSTANCE = Mappers.getMapper(NotificationMapper.class);

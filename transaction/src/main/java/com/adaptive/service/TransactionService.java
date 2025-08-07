@@ -2,6 +2,7 @@ package com.adaptive.service;
 
 import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.dto.TransactionResponseDto;
+import com.adaptive.entity.TypeTransaction;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface TransactionService {
 
     List<TransactionResponseDto> findAll();
 
-    List<TransactionResponseDto> findByType(String type);
+    List<TransactionResponseDto> findByType(TypeTransaction type);
 
     TransactionResponseDto create(TransactionRequestDto transactionRequestDto);
 

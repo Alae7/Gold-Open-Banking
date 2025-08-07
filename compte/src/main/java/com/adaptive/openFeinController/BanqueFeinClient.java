@@ -1,6 +1,6 @@
 package com.adaptive.openFeinController;
 
-import com.adaptive.model.Banque;
+import com.adaptive.model.BanqueResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient("BANQUE-SERVICE")
 public interface BanqueFeinClient {
 
-    @GetMapping("/api/banque/code/{uuid}")
-    public Banque getBanqueModel(@PathVariable("uuid") String uuid);
+    @GetMapping("/api/banque/{uuid}")
+    public BanqueResponseDto findByUuid(@PathVariable("uuid") String uuid);
 
 
 }

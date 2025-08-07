@@ -2,7 +2,6 @@ package com.adaptive.controller;
 
 import com.adaptive.dto.BanqueRequestDto;
 import com.adaptive.dto.BanqueResponseDto;
-import com.adaptive.model.BanqueModel;
 import com.adaptive.service.BanqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +24,9 @@ public class BanqueController {
     }
 
     @GetMapping("/{uuid}")
-    public BanqueResponseDto findByUuid(@PathVariable String uuid) {
+    public BanqueResponseDto findByUuid(@PathVariable("uuid") String uuid) {
 
         return banqueService.findByUuid(uuid);
-
-    }
-    @GetMapping("/code/{uuid}")
-    public BanqueModel getBanqueModel(@PathVariable("uuid") String uuid) {
-
-        return banqueService.getBanqueModel(uuid);
 
     }
 

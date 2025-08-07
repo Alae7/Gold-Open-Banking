@@ -5,11 +5,9 @@ import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
 import com.adaptive.model.CnssRequestDto;
+import com.adaptive.model.GdiRequestDto;
 import com.adaptive.model.ProductResponseDto;
-import com.adaptive.model.TransactionResponseDto;
-import com.adaptive.openFeinController.CompteFeinClient;
 import com.adaptive.openFeinController.ProductFeinClient;
-import com.adaptive.repository.CreditRepository;
 import com.adaptive.repository.EcheanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -113,6 +111,37 @@ public class Utils {
 
     public boolean kycCredit(CreditRequestDto creditRequestDto) {
 
+        switch (creditRequestDto.getTypeCompte()){
+
+            case SELF_EMPLOYED,ENTREPRISE -> {
+
+                GdiRequestDto gdiRequestDto = getGdiRequestDto(creditRequestDto);
+                String url = "http://localhost:4999/api/cnss";
+                return Boolean.TRUE.equals(restTemplate.postForObject(url, gdiRequestDto, Boolean.class));
+
+            }
+
+            case FONCTIONNAIRE,PROFESSIONNEL -> {
+
+                CnssRequestDto cnssRequestDto = getCnssRequestDto(creditRequestDto);
+                String url = "http://localhost:4998/api/dgi";
+                return Boolean.TRUE.equals(restTemplate.postForObject(url, cnssRequestDto, Boolean.class));
+
+            }
+            default -> {
+
+                return false;
+
+            }
+
+        }
+    }
+
+
+
+    private static CnssRequestDto  getCnssRequestDto(CreditRequestDto creditRequestDto) {
+
+
         CnssRequestDto cnssRequestDto = new CnssRequestDto();
 
         cnssRequestDto.setCin(creditRequestDto.getCin());
@@ -123,9 +152,25 @@ public class Utils {
         cnssRequestDto.setNbrFemme(creditRequestDto.getNbrFemme());
         cnssRequestDto.setNumInscription(creditRequestDto.getNumInscription());
 
-        String url = "http://localhost:4999/api/cnss";
+        return cnssRequestDto ;
 
-        return Boolean.TRUE.equals(restTemplate.postForObject(url, cnssRequestDto, Boolean.class));
+    }
+
+
+    private static GdiRequestDto getGdiRequestDto(CreditRequestDto creditRequestDto) {
+
+
+        GdiRequestDto gdiRequestDto = new GdiRequestDto();
+
+        gdiRequestDto.setCin(creditRequestDto.getCin());
+        gdiRequestDto.setIncome(creditRequestDto.getSalaire());
+        gdiRequestDto.setFirstName(creditRequestDto.getFirstName());
+        gdiRequestDto.setLastNam(creditRequestDto.getLastNam());
+        gdiRequestDto.setNbrEnfant(creditRequestDto.getNbrEnfant());
+        gdiRequestDto.setNbrFemme(creditRequestDto.getNbrFemme());
+        gdiRequestDto.setNumInscription(creditRequestDto.getNumInscription());
+
+        return gdiRequestDto ;
 
     }
 

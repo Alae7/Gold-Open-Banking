@@ -23,6 +23,7 @@ public class CnssRequestDto {
 
     private double salaire;
 
+
     private Long numInscription;
 
 }

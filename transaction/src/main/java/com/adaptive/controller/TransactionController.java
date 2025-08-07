@@ -2,6 +2,7 @@ package com.adaptive.controller;
 
 import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.dto.TransactionResponseDto;
+import com.adaptive.entity.TypeTransaction;
 import com.adaptive.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class TransactionController {
     }
 
     @GetMapping("type/{type}")
-    public List<TransactionResponseDto> findByType(@PathVariable("type") String type) {
+    public List<TransactionResponseDto> findByType(@PathVariable("type") TypeTransaction type) {
 
         return transactionService.findByType(type);
 

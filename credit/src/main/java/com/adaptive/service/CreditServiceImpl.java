@@ -56,7 +56,6 @@ public class CreditServiceImpl implements CreditService {
         return creditMapper.toResponseDto(credit);
     }
 
-    @Override
     public void changeStatus(String uuid, CreditStatus creditStatus) {
 
         Credit credit = creditRepository.findByUuid(uuid);

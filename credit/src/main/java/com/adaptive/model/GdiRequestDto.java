@@ -1,7 +1,6 @@
-package com.adaptive.dto;
+package com.adaptive.model;
 
 
-import com.adaptive.model.TypeCompte;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,17 +9,9 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class CreditRequestDto {
-
-    private String productUuid;
-
-    private Long compteRib;
+public class GdiRequestDto {
 
     private String  cin;
-
-    private int  age;
-
-    private TypeCompte typeCompte;
 
     private String  lastNam;
 
@@ -30,10 +21,8 @@ public class CreditRequestDto {
 
     private int  nbrEnfant;
 
-    private double salaire;
+    private double income;
 
     private Long numInscription;
-
-
 
 }

@@ -32,7 +32,7 @@ public class Compte extends BaseModel {
     @PrePersist
     public void prePersist() {
         this.setDeleted(false);
-        this.setStatut("PENDING");
+        this.setStatut(StatusCompte.PENDING);
         this.solde = 0.00;
     }
 

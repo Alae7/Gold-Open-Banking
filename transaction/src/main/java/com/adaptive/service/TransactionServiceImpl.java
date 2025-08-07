@@ -5,6 +5,7 @@ import com.adaptive.dto.NotificationRequestDto;
 import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.dto.TransactionResponseDto;
 import com.adaptive.entity.Transaction;
+import com.adaptive.entity.TypeTransaction;
 import com.adaptive.mapper.TransactionMapper;
 import com.adaptive.repository.TransactionRepository;
 import com.adaptive.utils.Utils;
@@ -53,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionResponseDto> findByType(String type) {
+    public List<TransactionResponseDto> findByType(TypeTransaction type) {
         return transactionMapper.toResponseDtoList(transactionRepository.findByType(type));
     }
 
