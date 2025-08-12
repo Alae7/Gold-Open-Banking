@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -17,21 +19,33 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class Customer extends BaseModel {
 
     @Field
-    private String firstName;
+    private String  firstName;
 
     @Field
-    private String lastName;
-
-    @Field
-    private String email;
-
-    @Field
-    private String phone;
+    private String  lastName;
 
     @Field
     private String cin;
 
+    @Field
+    private LocalDate birthDate;
+
+    @Field
+    private String  email;
+
+    @Field
+    private String  password;
+
+    @Field
+    private String  phone;
+
     @DBRef
-    private Address address;
+    private Image image;
+
+    @Field
+    private String  address;
+
+    @Field
+    private String  city;
 
 }

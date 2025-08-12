@@ -19,6 +19,9 @@ public class Compte extends BaseModel {
     private String  customerUuid;
 
     @Column
+    private Long    externalId;
+
+    @Column
     private TypeCompte  typeCompte;
 
     @Column(nullable = false, unique = true)

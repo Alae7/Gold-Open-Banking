@@ -62,6 +62,9 @@ public class CompteServiceImpl implements CompteService {
         Notification_CompteRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
         kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
 
+        /* consemation de l' api create de cbs */
+
+
         return compteMapper.toResponseDto(compte);
     }
 
@@ -75,6 +78,7 @@ public class CompteServiceImpl implements CompteService {
             if ( transaction.getAmount() > 0){
                 if (Utils.detectAnomaly(compte.getTypeCompte().toString(),transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(),transaction.getTransactionType().toUpperCase())){
                         // anomaly here
+
                     compte.setSolde(compte.getSolde() + transaction.getAmount());
                     compte.setStatut(StatusCompte.DEACTIVATE);
                     compteRepository.save(compte);

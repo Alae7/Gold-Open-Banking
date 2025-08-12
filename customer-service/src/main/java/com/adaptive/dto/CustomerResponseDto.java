@@ -1,8 +1,9 @@
 package com.adaptive.dto;
 
 
-import com.adaptive.dto.apidefinition.AddressResponseDto;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,11 +14,26 @@ import lombok.*;
 public class CustomerResponseDto {
 
     private String uuid;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private AddressResponseDto address;
+
+    private String  firstName;
+
+    private String  lastName;
+
+    private String cin;
+
+    private LocalDate birthDate;
+
+    private String  email;
+
+    private String  password;
+
+    private String  phone;
+
+    private String image;
+
+    private String  address;
+
+    private String  city;
 
 
 }

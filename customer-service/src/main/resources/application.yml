@@ -5,3 +5,7 @@ spring:
   config:
     import: "optional:configserver:${CONFIG_SERVICE_URL:http://localhost:9999}"
 
+cloudinary:
+  cloud_name: dztbwq6ab
+  api_key: 943454966696853
+  api_secret: cAe1U5GcPc0stMGMFO8BXLAiSN4

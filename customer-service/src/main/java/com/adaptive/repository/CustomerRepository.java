@@ -8,9 +8,10 @@ import java.util.List;
 public interface CustomerRepository extends MongoRepository<Customer, String> {
 
 
-    Customer findByUuid(String uuid);
-    List<Customer> findAllByIsDeletedFalse();
-    List<Customer> findByAddress_City(String city);
-    Customer findByEmail(String email);
+        Customer findByCin(String cin);
+
+        Customer findByUuid(String uuid);
+
+        List<Customer> findByCity(String city);
 
 }
