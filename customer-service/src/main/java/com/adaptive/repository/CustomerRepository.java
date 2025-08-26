@@ -14,4 +14,8 @@ public interface CustomerRepository extends MongoRepository<Customer, String> {
 
         List<Customer> findByCity(String city);
 
+        Customer findByEmail(String email);
+
+        List<Customer> findAllByDeletedIsFalse();
+
 }

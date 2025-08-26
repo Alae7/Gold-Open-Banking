@@ -4,6 +4,7 @@ import com.adaptive.dto.CreditRequestDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
+import com.adaptive.model.AmlCredit;
 import com.adaptive.model.CnssRequestDto;
 import com.adaptive.model.GdiRequestDto;
 import com.adaptive.model.ProductResponseDto;
@@ -18,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -116,7 +118,7 @@ public class Utils {
             case SELF_EMPLOYED,ENTREPRISE -> {
 
                 GdiRequestDto gdiRequestDto = getGdiRequestDto(creditRequestDto);
-                String url = "http://localhost:4999/api/cnss";
+                String url = "http://localhost:4998/api/dgi";
                 return Boolean.TRUE.equals(restTemplate.postForObject(url, gdiRequestDto, Boolean.class));
 
             }
@@ -124,7 +126,7 @@ public class Utils {
             case FONCTIONNAIRE,PROFESSIONNEL -> {
 
                 CnssRequestDto cnssRequestDto = getCnssRequestDto(creditRequestDto);
-                String url = "http://localhost:4998/api/dgi";
+                String url = "http://localhost:4999/api/cnss";
                 return Boolean.TRUE.equals(restTemplate.postForObject(url, cnssRequestDto, Boolean.class));
 
             }
@@ -137,10 +139,26 @@ public class Utils {
         }
     }
 
+    public boolean amlCredit(CreditRequestDto creditRequestDto , Double amount) {
+
+        String url = "http://localhost:8000/predict";
+
+        AmlCredit amlCredit = new AmlCredit();
+        amlCredit.setPerson_age(creditRequestDto.getAge());
+        amlCredit.setPerson_income(creditRequestDto.getSalaire());
+        amlCredit.setLoan_amnt(amount);
+        amlCredit.setPerson_home_ownership(creditRequestDto.getHome());
+        amlCredit.setCb_person_default_on_file(creditRequestDto.getHasCredit());
+        amlCredit.setLoan_intent(creditRequestDto.getTypeCredit());
+        amlCredit.setPerson_emp_length(creditRequestDto.getAnciennete());
+        Map<String, Object> response = restTemplate.postForObject(url, amlCredit, Map.class);
+        return Boolean.TRUE.equals(response != null ? response.get("loan_status") : false);
+
+    }
+
 
 
     private static CnssRequestDto  getCnssRequestDto(CreditRequestDto creditRequestDto) {
-
 
         CnssRequestDto cnssRequestDto = new CnssRequestDto();
 

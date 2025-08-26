@@ -25,6 +25,8 @@ public class Credit extends BaseModel {
 
     private Double remboursement;
 
+    private String typeCredit;
+
     private Integer duree;
 
     private LocalDate dateDebut;

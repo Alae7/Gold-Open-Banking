@@ -26,7 +26,7 @@ public class CustomerController {
     @GetMapping
     public List<CustomerResponseDto> findNotDeleted() {
 
-        return customerService.findByNotDeleted();
+        return customerService.findAllByDeletedIsFalse();
 
     }
 
@@ -44,12 +44,11 @@ public class CustomerController {
 
     }
 
-//    @GetMapping("/city")
-//    public List<CustomerResponseDto> findByCity(@RequestParam("city") String city) {
-//
-//        return customerService.findByCity(city);
-//
-//    }
+    @GetMapping("/city")
+    public List<CustomerResponseDto> findByCity(@RequestParam("city") String city) {
+
+        return customerService.findByCity(city);
+    }
 
     @PostMapping
     public CustomerResponseDto createCustomer(@RequestBody CustomerRequestDto customerRequestDto) {
@@ -58,12 +57,6 @@ public class CustomerController {
 
     }
 
-    @PutMapping("/{uuid}")
-    public CustomerResponseDto update(@RequestBody CustomerRequestDto customerRequestDto, @PathVariable("uuid") String uuid) {
-
-        return customerService.update(customerRequestDto,uuid);
-
-    }
 
     @DeleteMapping("/{uuid}")
     public String delete(@PathVariable("uuid") String uuid) {

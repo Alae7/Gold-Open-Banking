@@ -31,9 +31,6 @@ public abstract class BaseModel implements Serializable {
     private String uuid = UUID.randomUUID().toString();
 
     @Field
-    private String code;
-
-    @Field
     private String description;
 
     @Field

@@ -17,6 +17,7 @@ public class CreditResponseDto {
     private Long  compteRib;
     private Double  solde;
     private Long rib;
+    private String typeCredit;
     private String  typeCompte;
     private String Statut;
     private LocalDateTime createDateTime;

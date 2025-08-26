@@ -5,7 +5,6 @@ import com.adaptive.dto.CustomerResponseDto;
 import com.adaptive.entity.Customer;
 import com.adaptive.mapper.CustomerMapper;
 import com.adaptive.repository.CustomerRepository;
-import com.adaptive.service.apidefinition.AddressService;
 import com.adaptive.utils.CloudinaryService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerMapper customerMapper;
 
-    @Autowired
-    private CloudinaryService cloudinaryService;
-
 
     @Override
     public CustomerResponseDto findByUuid(String uuid) {
@@ -43,22 +39,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 
         Customer customer = customerMapper.toEntity(customerRequestDto);
-        customer.setAddress(address);
         customerRepository.save(customer);
-        return customerMapper.toResponseDto(customer);
 
-    }
 
-    @Override
-    public CustomerResponseDto update(CustomerRequestDto customerRequestDto, String uuid) {
-
-        Customer customer = customerRepository.findByUuid(uuid);
-        addressService.update(customerRequestDto, customer.getAddress().getUuid());
-        customer.setEmail(customerRequestDto.getEmail());
-        customer.setFirstName(customerRequestDto.getFirstName());
-        customer.setLastName(customerRequestDto.getLastName());
-        customer.setPhone(customerRequestDto.getPhone());
-        customerRepository.save(customer);
         return customerMapper.toResponseDto(customer);
 
     }
@@ -67,14 +50,13 @@ public class CustomerServiceImpl implements CustomerService {
     public String delete(String uuid) {
 
         Customer customer = customerRepository.findByUuid(uuid);
-        addressService.delete(customer.getAddress().getUuid());
         customer.setDeleted(true);
         return " customer has been deleted ";
     }
 
     @Override
-    public List<CustomerResponseDto> findByNotDeleted() {
-        return customerMapper.toResponseDtoList(customerRepository.findAllByIsDeletedFalse());
+    public List<CustomerResponseDto> findAllByDeletedIsFalse() {
+        return customerMapper.toResponseDtoList(customerRepository.findAllByDeletedIsFalse());
     }
 
     @Override
@@ -86,6 +68,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerResponseDto> findByCity(String city) {
-        return customerMapper.toResponseDtoList(customerRepository.findByAddress_City(city));
+        return customerMapper.toResponseDtoList(customerRepository.findByCity(city));
     }
 }

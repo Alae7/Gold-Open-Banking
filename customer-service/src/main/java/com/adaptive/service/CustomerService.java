@@ -13,11 +13,9 @@ public interface CustomerService {
 
     CustomerResponseDto create(CustomerRequestDto customerRequestDto);
 
-    CustomerResponseDto update(CustomerRequestDto customerRequestDto, String uuid);
-
     String delete(String uuid);
 
-    List<CustomerResponseDto> findByNotDeleted();
+    List<CustomerResponseDto> findAllByDeletedIsFalse();
 
     String findUuidByEmail(String email);
 

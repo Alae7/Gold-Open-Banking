@@ -1,7 +1,12 @@
 package com.adaptive.dto.apidefinition;
 
 
+import com.adaptive.entity.Headers;
+import com.adaptive.entity.Parameter;
 import lombok.*;
+import org.springframework.http.HttpMethod;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,9 +24,15 @@ public class ApiDefinitionResponseDto {
 
     private String url;
 
-    private String headersJson;
+    /**
+     * Liste d'en-têtes (ex: [{"key":"Content-Type","value":"application/json"}, ...])
+     */
+    private List<Headers> header;
 
-    private String queryParamsJson;
+    /**
+     * Liste de paramètres (query/path)
+     */
+    private List<Parameter> params;
 
     private String bodyJson;
 

@@ -18,6 +18,7 @@ public interface BanqueMapper {
     @Mapping(source = "apiDefinitions", target = "apiDefinitions")
     BanqueResponseDto toResponseDto(Banque banque);
 
+    @Mapping(source = "code", target = "code")
     Banque toEntity(BanqueRequestDto banqueRequestDto);
 
     List<BanqueResponseDto> toResponseDtoList(List<Banque> banques);

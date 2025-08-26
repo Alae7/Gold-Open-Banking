@@ -47,9 +47,11 @@ public class CreditServiceImpl implements CreditService {
 
         if(utils.kycCredit(creditRequestDto)){
             // if scoring is good
-            this.changeStatus(credit.getUuid(),CreditStatus.APPROUVE);
-            this.changeStatus(credit.getUuid(),CreditStatus.EN_COURS);
-            return creditMapper.toResponseDto(credit);
+            if (utils.amlCredit(creditRequestDto,credit.getMontantDemande())){
+                    this.changeStatus(credit.getUuid(),CreditStatus.APPROUVE);
+                    this.changeStatus(credit.getUuid(),CreditStatus.EN_COURS);
+                    return creditMapper.toResponseDto(credit);
+            }
         }
         // if scoring or kyc is bad
         this.changeStatus(credit.getUuid(),CreditStatus.REFUSE);

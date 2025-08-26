@@ -16,6 +16,14 @@ public class CreditRequestDto {
 
     private Long compteRib;
 
+    private String typeCredit;
+
+    private String home;
+
+    private String hasCredit;
+
+    private int anciennete;
+
     private String  cin;
 
     private int  age;

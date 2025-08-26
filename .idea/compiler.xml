@@ -10,6 +10,7 @@
         <module name="config-service" />
         <module name="customer-service" />
         <module name="gateway-service" />
+        <module name="Back-end" />
         <module name="banque-service" />
         <module name="product-service" />
         <module name="credit" />

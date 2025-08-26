@@ -17,4 +17,6 @@ public class BanqueRequestDto {
 
     private String adresse;
 
+    private String code;
+
 }

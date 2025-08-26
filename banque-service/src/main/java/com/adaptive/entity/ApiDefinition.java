@@ -4,6 +4,9 @@ package com.adaptive.entity;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.http.HttpMethod;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,22 +21,25 @@ public class ApiDefinition extends BaseModel{
     private String name;
 
     @Field
-    private String method;
+    private HttpMethod method;
 
     @Field
     private String url;
 
     @Field
-    private String headersJson;
+    private List<Headers> header;
 
     @Field
-    private String queryParamsJson;
+    private List<Parameter> params;
 
     @Field
     private String bodyJson;
 
     @Field
     private String banqueUuid;
+
+
+
 
 
 }

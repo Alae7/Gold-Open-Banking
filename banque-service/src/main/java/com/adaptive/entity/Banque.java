@@ -23,6 +23,9 @@ public class Banque extends BaseModel {
     @Field
     private String adresse;
 
+    @Field
+    private String code;
+
     @DBRef
     private List<ApiDefinition> apiDefinitions;
 
