@@ -1,25 +1,28 @@
 package com.adaptive.service.apidefinition;
 
+import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.apidefinition.ApiDefinitionRequestDto;
 import com.adaptive.dto.apidefinition.ApiDefinitionResponseDto;
 import com.adaptive.entity.ApiDefinition;
 import com.adaptive.entity.Banque;
-import com.adaptive.entity.Headers;
-import com.adaptive.entity.Parameter;
+import com.adaptive.entity.NameApi;
 import com.adaptive.mapper.ApiDefinitionMapper;
 import com.adaptive.repository.ApiDefinitionRepository;
 import com.adaptive.repository.BanqueRepository;
+import com.adaptive.utils.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+
 
 @Service
+@Slf4j
 @Transactional
 public class ApiDefinitionServiceImpl implements ApiDefinitionService {
 
@@ -35,7 +38,7 @@ public class ApiDefinitionServiceImpl implements ApiDefinitionService {
     private BanqueRepository banqueRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private Utils utils;
 
     @Override
     public ApiDefinitionResponseDto findByUuid(String uuid) {
@@ -48,33 +51,39 @@ public class ApiDefinitionServiceImpl implements ApiDefinitionService {
     }
 
     @Override
-    public ApiDefinitionResponseDto create(ApiDefinitionRequestDto apiDefinitionRequestDto) {
+    public String create(List<ApiDefinitionRequestDto> apiDefinitionRequestDtos) {
 
-        ApiDefinition apiDefinition = apiDefinitionMapper.toEntity(apiDefinitionRequestDto);
-        apiDefinition.setHeader(apiDefinitionRequestDto.getHeaders());
-        apiDefinition.setParams(apiDefinitionRequestDto.getQueryParams());
-        apiDefinition = apiDefinitionRepository.save(apiDefinition);
+        Banque banque = banqueRepository.findByUuid(apiDefinitionRequestDtos.get(0).getBanqueUuid());
+        List<ApiDefinition>  apiDefinitions = new ArrayList<>();
+        try {
 
-        Banque banque = banqueRepository.findByUuid(apiDefinition.getBanqueUuid());
-        List<ApiDefinition> apiDefinitions = banque.getApiDefinitions();
-        apiDefinitions.add(apiDefinition);
-        banque.setApiDefinitions(apiDefinitions);
-        banqueRepository.save(banque);
+            for (ApiDefinitionRequestDto apiDefinitionRequestDto : apiDefinitionRequestDtos) {
 
-        return apiDefinitionMapper.toResponseDto(apiDefinition);
+                ApiDefinition apiDefinition = apiDefinitionMapper.toEntity(apiDefinitionRequestDto);
+                apiDefinition = apiDefinitionRepository.save(apiDefinition);
+                apiDefinitions.add(apiDefinition);
+
+            }
+
+            banque.setApiDefinitions(apiDefinitions);
+            banqueRepository.save(banque);
+
+            return "Success";
+
+        }catch (Exception e){
+
+            return "Error";
+
+        }
+
     }
 
     @Override
-    public List<ApiDefinitionResponseDto> findByMethod(HttpMethod httpMethod) {
-        return apiDefinitionMapper.toResponseDtoList(apiDefinitionRepository.findByMethod(httpMethod));
-    }
-
-    @Override
-    public void update(String uuid,ApiDefinitionRequestDto apiDefinitionRequestDto) {
+    public void update(String uuid, String url) {
 
         ApiDefinition apiDefinition = apiDefinitionRepository.findByUuid(uuid);
-
-
+        apiDefinition.setUrl(url);
+        apiDefinitionRepository.save(apiDefinition);
 
     }
 
@@ -86,61 +95,70 @@ public class ApiDefinitionServiceImpl implements ApiDefinitionService {
     }
 
     @Override
-    public ResponseEntity<?> executeApi(String uuid , Map<String, String> pathParams,  Map<String, String> queryParams ,Map<String, String> requestBody) {
+    public ResponseEntity<?> executeApi(ExecuteRequest executeRequest) {
 
-        ApiDefinition apiDefinition = apiDefinitionRepository.findByUuid(uuid);
-        String url = apiDefinition.getUrl();
-        String body = apiDefinition.getBodyJson();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        // Build headers dynamically
-        if (apiDefinition.getHeader() != null) {
-            for (Headers header : apiDefinition.getHeader()) {
-                httpHeaders.set(header.getKey(), header.getValue());
+        Banque banque = banqueRepository.findByCode(executeRequest.getBanqueCode());
+        ApiDefinition apiDefinition = apiDefinitionRepository.findByBanqueUuidAndName(banque.getUuid(),executeRequest.getNameApi());
+
+        switch (apiDefinition.getMethod().toString()) {
+
+            case "POST"  -> {
+                return utils.postExecution(apiDefinition.getUrl(),executeRequest.getRequestBody());
             }
-        }
-        // Replace path variables if any
-        if (pathParams != null) {
-            for (Map.Entry<String, String> entry : pathParams.entrySet()) {
-                url = url.replace("{" + entry.getKey() + "}", entry.getValue());
+            case "PUT" -> {
+                return utils.putExecution(apiDefinition.getUrl(),executeRequest.getPathParams(),executeRequest.getRequestBody());
             }
-        }
+            case "DELETE" -> {
+                return utils.deleteExecution(apiDefinition.getUrl(),executeRequest.getPathParams());
+            }
 
-        // Add query parameters from method argument
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+            case "GET" ->{
 
-        if (apiDefinition.getParams() != null && queryParams != null) {
-            for (Parameter param : apiDefinition.getParams()) {
-                // Always take value from request, ignore default value in DB
-                if (queryParams.containsKey(param.getName())) {
-                    builder.queryParam(param.getName(), queryParams.get(param.getName()));
+                if(apiDefinition.getName().equals(NameApi.GET_ALL_PRODUCT)){
+                    return utils.getExecution(apiDefinition.getUrl());
+                }else {
+                    return utils.getExecution(apiDefinition.getUrl(),executeRequest.getPathParams());
                 }
             }
-        }
 
-        // 4. Build request body
-        if (body != null && requestBody != null) {
-            // Replace placeholders like {{key}} with actual values from requestBodyMap
-            for (Map.Entry<String, String> entry : requestBody.entrySet()) {
-                String placeholder = "{{" + entry.getKey() + "}}";
-                body = body.replace(placeholder, entry.getValue());
+            default -> {
+                return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                        .body("HTTP method not supported: " + apiDefinition.getMethod().toString());
             }
         }
-        HttpEntity<Object> entity = new HttpEntity<>(body, httpHeaders);
 
-        String finalUrl = builder.toUriString();
-
-        try {
-
-            return new RestTemplate().exchange(
-                    finalUrl,
-                    apiDefinition.getMethod(),
-                    entity,
-                    Object.class
-            );
-
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error executing API: " + e.getMessage());
-        }
     }
+
+    @Override
+    public List<Object> getFromAllApi() {
+
+        List<Banque> banques =  banqueRepository.findAll();
+        List<Object> results = new ArrayList<>();
+
+
+        for (Banque banque : banques) {
+            try {
+                ApiDefinition apiDefinition = apiDefinitionRepository
+                        .findByBanqueUuidAndName(banque.getUuid(), NameApi.GET_ALL_PRODUCT);
+
+                if (apiDefinition == null || apiDefinition.getUrl() == null) {
+                    log.warn("No API definition found for bank: {}", banque.getName());
+                    continue;
+                }
+
+                ResponseEntity<?> response = utils.getExecution(apiDefinition.getUrl());
+
+                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                    results.add(response.getBody()); // ✅ Extract data here
+                } else {
+                    log.error("❌ Failed to fetch data for bank {}: {}", banque.getName(), response.getStatusCode());
+                }
+
+            } catch (Exception e) {
+                log.error("Error while fetching products for bank {}: {}", banque.getName(), e.getMessage());
+            }
+        }
+        return results;
+    }
+
 }

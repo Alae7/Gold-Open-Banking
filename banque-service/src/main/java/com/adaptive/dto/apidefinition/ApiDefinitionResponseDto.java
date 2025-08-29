@@ -1,12 +1,8 @@
 package com.adaptive.dto.apidefinition;
 
 
-import com.adaptive.entity.Headers;
-import com.adaptive.entity.Parameter;
+import com.adaptive.entity.NameApi;
 import lombok.*;
-import org.springframework.http.HttpMethod;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,27 +14,14 @@ public class ApiDefinitionResponseDto {
 
     private String uuid;
 
-    private String name;
+    private NameApi name;
 
     private String method;
 
     private String url;
 
-    /**
-     * Liste d'en-têtes (ex: [{"key":"Content-Type","value":"application/json"}, ...])
-     */
-    private List<Headers> header;
-
-    /**
-     * Liste de paramètres (query/path)
-     */
-    private List<Parameter> params;
-
-    private String bodyJson;
-
     private String banqueUuid;
 
-    private String description;
 
 
 

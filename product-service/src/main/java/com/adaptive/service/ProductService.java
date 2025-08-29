@@ -11,6 +11,8 @@ public interface ProductService {
 
     List<ProductResponseDto> findAll();
 
+    List<Object> findAllFromBanks();
+
     List<ProductResponseDto> findByCompteType(String compteType);
 
     ProductResponseDto create(ProductRequestDto productRequestDto);

@@ -15,6 +15,8 @@ public class ProductRequestDto {
 
     private Integer duree;
 
+    private String codeBank;
+
     private String  compteType;
 
     private Double tauxInteret;

@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.http.HttpMethod;
 
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,22 +17,13 @@ import java.util.List;
 public class ApiDefinition extends BaseModel{
 
     @Field
-    private String name;
+    private NameApi name;
 
     @Field
     private HttpMethod method;
 
     @Field
     private String url;
-
-    @Field
-    private List<Headers> header;
-
-    @Field
-    private List<Parameter> params;
-
-    @Field
-    private String bodyJson;
 
     @Field
     private String banqueUuid;

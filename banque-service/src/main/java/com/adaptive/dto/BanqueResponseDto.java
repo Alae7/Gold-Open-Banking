@@ -22,8 +22,6 @@ public class BanqueResponseDto {
 
     private String adresse;
 
-    private String description;
-
     private List<ApiDefinitionResponseDto> apiDefinitions;
 
 

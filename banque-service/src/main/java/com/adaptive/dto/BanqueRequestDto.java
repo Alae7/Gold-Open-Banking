@@ -13,8 +13,6 @@ public class BanqueRequestDto {
 
     private String name;
 
-    private String description;
-
     private String adresse;
 
     private String code;

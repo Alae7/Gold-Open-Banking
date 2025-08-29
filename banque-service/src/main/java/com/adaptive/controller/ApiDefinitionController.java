@@ -1,9 +1,11 @@
 package com.adaptive.controller;
 
+import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.apidefinition.ApiDefinitionRequestDto;
 import com.adaptive.dto.apidefinition.ApiDefinitionResponseDto;
 import com.adaptive.service.apidefinition.ApiDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,18 +30,32 @@ public class ApiDefinitionController {
 
 
     @PostMapping
-    public ApiDefinitionResponseDto create(@RequestBody ApiDefinitionRequestDto apiDefinitionRequestDto) {
+    public String create(@RequestBody List<ApiDefinitionRequestDto> apiDefinitionRequestDto) {
         return apiDefinitionService.create(apiDefinitionRequestDto);
     }
 
     @PutMapping("/{uuid}")
-    public void update(@PathVariable("uuid") String uuid, @RequestBody ApiDefinitionRequestDto apiDefinitionRequestDto) {
-        apiDefinitionService.update(uuid,apiDefinitionRequestDto);
+    public void update(@PathVariable("uuid") String uuid, @RequestBody String url) {
+        apiDefinitionService.update(uuid,url);
     }
 
     @DeleteMapping("/{uuid}")
     public void delete(@PathVariable("uuid") String uuid) {
         apiDefinitionService.delete(uuid);
+    }
+
+    @PostMapping("/execute")
+    public ResponseEntity<?> execute(@RequestBody ExecuteRequest executeRequest) {
+
+        return apiDefinitionService.executeApi(executeRequest);
+
+    }
+
+    @GetMapping("/execute")
+    public List<Object> execute() {
+
+        return apiDefinitionService.getFromAllApi();
+
     }
 
 }

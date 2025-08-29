@@ -2,10 +2,16 @@ package com.adaptive.utils;
 
 
 
+import com.adaptive.config.ExecuteRequest;
+import com.adaptive.dto.ProductResponseDto;
+import com.adaptive.entity.NameApi;
+import com.adaptive.entity.Product;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 
 public class Utils {
@@ -47,4 +53,30 @@ public class Utils {
         }
         return result.toString();
     }
+
+    public static ExecuteRequest createExecuteRequest(String uuid) {
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        executeRequest.setPathParams(Map.of("uuid", uuid));;
+        return executeRequest;
+
+    }
+
+    public static ExecuteRequest createExecuteRequest(ProductResponseDto product) {
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        executeRequest.setRequestBody(product);
+        executeRequest.setNameApi(NameApi.CREATE_PRODUCT);
+
+        return executeRequest;
+
+    }
+
+    public static ExecuteRequest createExecuteRequestCompteType(String compteType) {
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        executeRequest.setPathParams(Map.of("compteType", compteType));
+        return executeRequest;
+    }
+
 }

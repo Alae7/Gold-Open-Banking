@@ -11,13 +11,21 @@
         <module name="customer-service" />
         <module name="gateway-service" />
         <module name="Back-end" />
-        <module name="banque-service" />
-        <module name="product-service" />
         <module name="credit" />
         <module name="discovery-service" />
         <module name="notification-service" />
         <module name="transaction" />
         <module name="compte" />
+      </profile>
+      <profile name="Annotation profile for banque-service" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+        </processorPath>
+        <module name="product-service" />
+        <module name="banque-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
