@@ -48,24 +48,30 @@ public class CompteServiceImpl implements CompteService {
     }
 
     @Override
-    public CompteResponseDto create(CompteRequestDto compteRequestDto) {
+    public boolean create(CompteRequestDto compteRequestDto) {
 
-        BanqueResponseDto banque = banqueFeinClient.findByUuid(compteRequestDto.getBanqueUuid());
-        Compte compte = compteMapper.toEntity(compteRequestDto);
+        try {
 
-        compte.setNumCompte(generateNumerousCompte());
-        RIB  rib = Utils.generateRib(compte.getNumCompte(),banque.getCode());
-        compte.setRib(rib.getRib());
-        compte.setCle(rib.getCle());
-        compteRepository.save(compte);
+            BanqueResponseDto banque = banqueFeinClient.findByUuid(compteRequestDto.getBanqueUuid());
+            Compte compte = compteMapper.toEntity(compteRequestDto);
 
-        Notification_CompteRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
-        kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
+            compte.setNumCompte(generateNumerousCompte());
+            RIB  rib = Utils.generateRib(compte.getNumCompte(),banque.getCode());
+            compte.setRib(rib.getRib());
+            compte.setCle(rib.getCle());
+            compteRepository.save(compte);
 
-        /* consemation de l' api create de cbs */
+            Notification_CompteRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
+            kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
+
+            /* consemation de l' api create de cbs */
 
 
-        return compteMapper.toResponseDto(compte);
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
+
     }
 
 

@@ -59,5 +59,10 @@ public class BanqueServiceImpl implements BanqueService {
         return " banque has been deleted ";
     }
 
+    @Override
+    public String findCodeByUuid(String uuid) {
+        return banqueRepository.findCodeByUuid(uuid);
+    }
+
 
 }

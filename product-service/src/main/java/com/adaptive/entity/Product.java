@@ -18,6 +18,8 @@ public class Product extends BaseModel {
 
     private Integer duree;
 
+    private String codeBank;
+
     private String  compteType;
 
     private Double tauxInteret;

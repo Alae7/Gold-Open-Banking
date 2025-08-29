@@ -65,4 +65,18 @@ public class CustomerController {
 
     }
 
+    @GetMapping("/cin/{cin}")
+    public CustomerResponseDto findByCin(@PathVariable("cin") String cin) {
+
+        return customerService.findByCin(cin);
+
+    }
+
+    @GetMapping("/bank/{uuid}")
+    public CustomerResponseDto findByBankUuid(@PathVariable("uuid") String uuid) {
+
+        return customerService.findByUuid(uuid);
+
+    }
+
 }

@@ -13,10 +13,12 @@ import com.adaptive.utils.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +45,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ResponseEntity<?> findByUuidFromBank(String uuid, String code){
+
+        ExecuteRequest request = Utils.createExecuteRequest(uuid,code);
+
+        return banqueFeinClient.execute(request);
+
+    }
+
+    @Override
     public List<ProductResponseDto> findAll() {
         return productMapper.toResponseDtoList(productRepository.findAll());
     }
@@ -55,6 +66,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> findByCompteType(String compteType) {
         return productMapper.toResponseDtoList(productRepository.findByCompteType(compteType));
+    }
+
+    @Override
+    public List<Object> findByCompteTypeFromBanks(String compteType){
+
+        Map<String, String> pathParams = Map.of("compteType", compteType);
+        return banqueFeinClient.execute(pathParams);
     }
 
     @Override

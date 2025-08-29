@@ -17,10 +17,7 @@ public interface BanqueFeinClient {
     @PostMapping("/api/apiDefinition/execute")
     public ResponseEntity<?> execute(@RequestBody ExecuteRequest executeRequest);
 
-    @GetMapping("/api/apiDefinition/execute")
-    public List<Object> execute();
-
-    @GetMapping("/api/apiDefinition/execute/{compteType}")
-    public List<Object> execute(@PathVariable("compteType") Map<String, String> pathParams);
+    @GetMapping("/api/banque/code/{uuid}")
+    public String findCodeByUuid(@PathVariable("uuid") String uuid);
 
 }

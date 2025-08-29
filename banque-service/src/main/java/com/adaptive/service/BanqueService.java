@@ -18,5 +18,5 @@ public interface BanqueService {
     String delete(String uuid);
 
 
-
+    String findCodeByUuid(String uuid);
 }

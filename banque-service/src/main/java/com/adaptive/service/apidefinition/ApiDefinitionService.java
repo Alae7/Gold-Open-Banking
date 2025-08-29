@@ -3,8 +3,6 @@ package com.adaptive.service.apidefinition;
 import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.apidefinition.ApiDefinitionRequestDto;
 import com.adaptive.dto.apidefinition.ApiDefinitionResponseDto;
-import com.adaptive.entity.NameApi;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,4 +24,6 @@ public interface ApiDefinitionService {
     public ResponseEntity<?> executeApi(ExecuteRequest executeRequest);
 
     public List<Object> getFromAllApi();
+
+    public List<Object> getFromAllApi(Map<String, String> pathParams);
 }

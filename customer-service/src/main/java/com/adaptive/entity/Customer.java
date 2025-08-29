@@ -48,4 +48,7 @@ public class Customer extends BaseModel {
     @Field
     private String  city;
 
+    @Field
+    private String  banqueUuid;
+
 }

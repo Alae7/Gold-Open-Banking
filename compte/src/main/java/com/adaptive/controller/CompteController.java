@@ -40,7 +40,7 @@ public class CompteController {
 
 
     @PostMapping
-    public CompteResponseDto createCompte(@RequestBody CompteRequestDto compteRequestDto) {
+    public boolean createCompte(@RequestBody CompteRequestDto compteRequestDto) {
 
         return compteService.create(compteRequestDto);
 

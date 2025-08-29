@@ -11,9 +11,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class CustomerResponseDto {
+public class ClientRequestDto {
 
-    private String uuid;
+    private String  clientUuid;
 
     private String  firstName;
 
@@ -29,13 +29,8 @@ public class CustomerResponseDto {
 
     private String  phone;
 
-    private String image;
-
     private String  address;
 
     private String  city;
-
-    private boolean  stat;
-
 
 }

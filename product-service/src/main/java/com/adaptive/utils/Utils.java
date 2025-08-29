@@ -54,10 +54,12 @@ public class Utils {
         return result.toString();
     }
 
-    public static ExecuteRequest createExecuteRequest(String uuid) {
+    public static ExecuteRequest createExecuteRequest(String uuid , String code) {
 
         ExecuteRequest executeRequest = new ExecuteRequest();
-        executeRequest.setPathParams(Map.of("uuid", uuid));;
+        executeRequest.setPathParams(Map.of("uuid", uuid));
+        executeRequest.setBanqueCode(code);
+        executeRequest.setNameApi(NameApi.GET_PRODUCT);
         return executeRequest;
 
     }
@@ -70,13 +72,6 @@ public class Utils {
 
         return executeRequest;
 
-    }
-
-    public static ExecuteRequest createExecuteRequestCompteType(String compteType) {
-
-        ExecuteRequest executeRequest = new ExecuteRequest();
-        executeRequest.setPathParams(Map.of("compteType", compteType));
-        return executeRequest;
     }
 
 }

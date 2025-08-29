@@ -4,6 +4,7 @@ import com.adaptive.dto.ProductRequestDto;
 import com.adaptive.dto.ProductResponseDto;
 import com.adaptive.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,24 @@ public class ProductController {
 
         return productService.findByUuid(uuid);
 
+    }
+
+    @GetMapping("/banks")
+    public List<Object> findAllBanks(){
+        return productService.findAllFromBanks();
+    }
+
+
+    @GetMapping("/banks/{uuid}")
+    public ResponseEntity<?> findByUuidFromBank(@PathVariable("uuid") String uuid ,@RequestBody String code){
+
+        return productService.findByUuidFromBank(uuid,code);
+
+    }
+
+    @GetMapping("/banks/compte_type/{type}")
+    public List<Object> findByCompteTypeFromBanks(@PathVariable("type") String type){
+        return productService.findByCompteTypeFromBanks(type);
     }
 
 

@@ -1,5 +1,6 @@
 package com.adaptive.dto;
 
+import com.adaptive.entity.TypeCompte;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,5 +33,9 @@ public class CustomerRequestDto {
     private String  address;
 
     private String  city;
+
+    private String  banqueUuid;
+
+    private TypeCompte typeCompte;
 
 }

@@ -12,7 +12,7 @@ public interface CompteService {
 
     List<CompteResponseDto> findByBanqueUuid(String banqueUuid);
 
-    CompteResponseDto create(CompteRequestDto compteRequestDto);
+    boolean create(CompteRequestDto compteRequestDto);
 
     String update(Long rib, Transaction transaction);
 
