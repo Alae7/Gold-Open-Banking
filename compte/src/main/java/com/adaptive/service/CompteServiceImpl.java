@@ -1,6 +1,7 @@
 package com.adaptive.service;
 
 
+import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.CompteRequestDto;
 import com.adaptive.dto.CompteResponseDto;
 import com.adaptive.dto.Notification_CompteRequestDto;
@@ -16,6 +17,7 @@ import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +39,16 @@ public class CompteServiceImpl implements CompteService {
     @Autowired
     private CompteMapper compteMapper;
 
+    @Autowired Utils utils;
+
     @Override
     public CompteResponseDto findByRib(Long rib) {
-        return compteMapper.toResponseDto(compteRepository.findByRib(rib));
+
+        Compte compte = compteRepository.findByRib(rib);
+        compte.setSolde(utils.getAccount(compte));
+        compteRepository.save(compte);
+
+        return compteMapper.toResponseDto(compte);
     }
 
     @Override
@@ -54,17 +63,14 @@ public class CompteServiceImpl implements CompteService {
 
             BanqueResponseDto banque = banqueFeinClient.findByUuid(compteRequestDto.getBanqueUuid());
             Compte compte = compteMapper.toEntity(compteRequestDto);
-
-            compte.setNumCompte(generateNumerousCompte());
-            RIB  rib = Utils.generateRib(compte.getNumCompte(),banque.getCode());
-            compte.setRib(rib.getRib());
-            compte.setCle(rib.getCle());
+            ExecuteRequest executeRequest = utils.createExecuteRequest(compte);
+            ResponseEntity<?> account = banqueFeinClient.execute(executeRequest);
+            compte.setRib((Long) account.getBody());
             compteRepository.save(compte);
-
             Notification_CompteRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
             kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
 
-            /* consemation de l' api create de cbs */
+
 
 
             return Boolean.TRUE;
@@ -80,35 +86,38 @@ public class CompteServiceImpl implements CompteService {
     public String update(Long rib , Transaction transaction) {
 
         Compte compte = compteRepository.findByRib(rib);
+
         if (compte != null) {
-            if ( transaction.getAmount() > 0){
-                if (Utils.detectAnomaly(compte.getTypeCompte().toString(),transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(),transaction.getTransactionType().toUpperCase())){
+
+            ExecuteRequest executeRequest = utils.updateExecuteRequest(compte,transaction.getAmount());
+            ResponseEntity<?> status = banqueFeinClient.execute(executeRequest);
+            if((boolean) status.getBody()) {
+                if (transaction.getAmount() > 0) {
+                    if (Utils.detectAnomaly(compte.getTypeCompte().toString(), transaction.getAmount(), transaction.getCreateDateTime().toLocalDate(), transaction.getTransactionType().toUpperCase())) {
                         // anomaly here
+                        compte.setSolde(compte.getSolde() + transaction.getAmount());
+                        compte.setStatut(StatusCompte.DEACTIVATE);
+                        compteRepository.save(compte);
+                        Notification_CompteRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);
+                        kafkaTemplate.send("anomaly_topic", notificationRequestDtos.getNotificationType(), notificationRequestDtos);
+                        return "success";
+                    } else {
 
+                        compte.setSolde(compte.getSolde() + transaction.getAmount());
+                        compteRepository.save(compte);
+                        return "success";
+
+                    }
+                } else {
                     compte.setSolde(compte.getSolde() + transaction.getAmount());
-                    compte.setStatut(StatusCompte.DEACTIVATE);
-                    compteRepository.save(compte);
-                    Notification_CompteRequestDto notificationRequestDtos = Utils.deactivateNotificationRequestDto(compte);
-                    kafkaTemplate.send("anomaly_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
-                    return "success";
-                }
-                else{
-
-                    compte.setSolde(compte.getSolde() + transaction.getAmount());
                     compteRepository.save(compte);
                     return "success";
-
                 }
             }else {
-
-                compte.setSolde(compte.getSolde() + transaction.getAmount());
-                compteRepository.save(compte);
-                return  "success";
-
+                return "failure";
             }
         }
-
-        return " compte not found ";
+        return " compte not found or Deactivated";
     }
 
     @Override
@@ -170,22 +179,5 @@ public class CompteServiceImpl implements CompteService {
         compteRepository.save(compte);
         return " successfully deleted ";
     }
-
-
-
-
-
-
-    private Long generateNumerousCompte() {
-
-        Long numCompte ;
-        do {
-            numCompte = Utils.generatorNumerousCompte();
-        }while (compteRepository.existsByNumCompte(numCompte));
-
-        return numCompte;
-
-    }
-
 
 }

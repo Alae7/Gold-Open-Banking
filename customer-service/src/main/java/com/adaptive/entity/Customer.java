@@ -39,9 +39,6 @@ public class Customer extends BaseModel {
     @Field
     private String  phone;
 
-    @DBRef
-    private Image image;
-
     @Field
     private String  address;
 

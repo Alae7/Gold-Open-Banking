@@ -29,8 +29,6 @@ public class CustomerResponseDto {
 
     private String  phone;
 
-    private String image;
-
     private String  address;
 
     private String  city;

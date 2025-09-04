@@ -30,10 +30,6 @@ public abstract class BaseModel implements Serializable {
     @Column(name = "rib",length = 15, unique = true)
     private Long rib;
 
-    @Column(name = "cle")
-    private int cle;
-
-
     @Column(name = "description")
     private String description;
 

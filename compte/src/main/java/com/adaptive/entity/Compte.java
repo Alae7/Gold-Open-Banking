@@ -15,17 +15,12 @@ public class Compte extends BaseModel {
 
     @Column
     private Double  solde;
+
     @Column
     private String  customerUuid;
 
     @Column
-    private Long    externalId;
-
-    @Column
     private TypeCompte  typeCompte;
-
-    @Column(nullable = false, unique = true)
-    private Long numCompte;
 
     @Column(nullable = false, unique = true)
     private String  banqueUuid;

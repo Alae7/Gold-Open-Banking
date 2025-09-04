@@ -9,7 +9,6 @@ import com.adaptive.mapper.CustomerMapper;
 import com.adaptive.openFeinController.BanqueFeinClient;
 import com.adaptive.openFeinController.CompteFeinClient;
 import com.adaptive.repository.CustomerRepository;
-import com.adaptive.utils.CloudinaryService;
 import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

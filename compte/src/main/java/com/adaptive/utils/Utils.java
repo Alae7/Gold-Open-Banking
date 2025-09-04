@@ -1,57 +1,28 @@
 package com.adaptive.utils;
 
 
+import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.Notification_CompteRequestDto;
 import com.adaptive.entity.Compte;
-import com.adaptive.model.RIB;
+import com.adaptive.entity.NameApi;
+import com.adaptive.model.AccountRequestDto;
+import com.adaptive.model.BanqueResponseDto;
+import com.adaptive.openFeinController.BanqueFeinClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
 
+@Component
 public class Utils {
 
-    /**
-     * Génère un numéro de compte bancaire (Long à 10 chiffres)
-     */
-    public static Long generatorNumerousCompte() {
 
-        return ThreadLocalRandom.current().nextLong(1_000_000_000L, 9_999_999_999L);
-    }
-
-
-    /**
-     * Génère un RIB basé sur un numéro de compte (sans agence)
-     */
-
-    public static RIB generateRib(Long numCompte , String codeBanque) {
-
-        // Format du numéro de compte à 10 chiffres
-        String compteStr = String.format("%010d", numCompte);
-
-        // Clé provisoire "00" pour le calcul
-        String base = codeBanque + compteStr + "00";
-
-        // Calcul de la clé de contrôle
-        long baseLong = Long.parseLong(base);
-        int cle = 97 - (int)(baseLong % 97);
-
-        // Construction du RIB complet
-        String ribStr = codeBanque + compteStr + String.format("%02d", cle);
-        Long numRib = Long.parseLong(ribStr); // Assuré de rester dans la limite de Long
-
-        // Création de l'objet RIB
-        RIB rib = new RIB();
-        rib.setRib(numRib);
-        rib.setCle(cle);
-
-        return rib;
-    }
-
-
+    @Autowired
+    private BanqueFeinClient banqueFeinClient;
 
     /**
      * Appelle l'API de prédiction d'anomalie.
@@ -143,4 +114,45 @@ public class Utils {
     }
 
 
+    public ExecuteRequest createExecuteRequest(Compte compte){
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        BanqueResponseDto banqueResponseDto = banqueFeinClient.findByUuid(compte.getBanqueUuid());
+        AccountRequestDto accountRequestDto =  new AccountRequestDto();
+        accountRequestDto.setTypeAccount(compte.getTypeCompte());
+        accountRequestDto.setClientUuid(compte.getCustomerUuid());
+        accountRequestDto.setCreateDateTime(compte.getCreateDateTime());
+        executeRequest.setNameApi(NameApi.CREATE_ACCOUNT);
+        executeRequest.setBanqueCode(banqueResponseDto.getCode());
+        executeRequest.setRequestBody(accountRequestDto);
+
+        return executeRequest;
+
+    }
+
+
+    public ExecuteRequest updateExecuteRequest(Compte compte, double amount) {
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        BanqueResponseDto banqueResponseDto = banqueFeinClient.findByUuid(compte.getBanqueUuid());
+        executeRequest.setNameApi(NameApi.UPDATE_ACCOUNT);
+        executeRequest.setBanqueCode(banqueResponseDto.getCode());
+        executeRequest.setRequestBody(amount);
+        executeRequest.setPathParams(Map.of("rib", String.valueOf(compte.getRib())));
+        return executeRequest;
+
+    }
+
+    public Double getAccount(Compte compte) {
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        BanqueResponseDto banqueResponseDto = banqueFeinClient.findByUuid(compte.getBanqueUuid());
+        executeRequest.setNameApi(NameApi.GET_ACCOUNT_BY_RIB);
+        executeRequest.setBanqueCode(banqueResponseDto.getCode());
+        executeRequest.setPathParams(Map.of("rib", String.valueOf(compte.getRib())));
+        ResponseEntity<?> response = banqueFeinClient.execute(executeRequest);
+
+        return (double) response.getBody();
+
+    }
 }

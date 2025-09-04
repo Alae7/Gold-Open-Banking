@@ -23,29 +23,23 @@ public class CustomerController {
 
     }
 
-    @GetMapping
-    public List<CustomerResponseDto> findNotDeleted() {
-
-        return customerService.findAllByDeletedIsFalse();
-
-    }
-
-    @GetMapping("/email")
-    public String findByEmail(@RequestParam String email) {
+    @GetMapping("/email/{email}")
+    public String findByEmail(@PathVariable("email") String email) {
 
         return customerService.findUuidByEmail(email);
 
     }
 
     @GetMapping("/{uuid}")
+
     public CustomerResponseDto findCustomerById(@PathVariable("uuid") String uuid) {
 
         return customerService.findByUuid(uuid);
 
     }
 
-    @GetMapping("/city")
-    public List<CustomerResponseDto> findByCity(@RequestParam("city") String city) {
+    @GetMapping("/city/{city}")
+    public List<CustomerResponseDto> findByCity(@PathVariable("city") String city) {
 
         return customerService.findByCity(city);
     }
@@ -73,9 +67,9 @@ public class CustomerController {
     }
 
     @GetMapping("/bank/{uuid}")
-    public CustomerResponseDto findByBankUuid(@PathVariable("uuid") String uuid) {
+    public List<CustomerResponseDto> findByBankUuid(@PathVariable("uuid") String uuid) {
 
-        return customerService.findByUuid(uuid);
+        return customerService.findByBankUuid(uuid);
 
     }
 

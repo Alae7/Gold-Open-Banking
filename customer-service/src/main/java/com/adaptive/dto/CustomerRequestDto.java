@@ -28,8 +28,6 @@ public class CustomerRequestDto {
 
     private String  phone;
 
-    private MultipartFile image;
-
     private String  address;
 
     private String  city;
