@@ -65,7 +65,7 @@ public class ApiDefinitionServiceImpl implements ApiDefinitionService {
 
             }
 
-            banque.setApiDefinitions(apiDefinitions);
+            banque.getApiDefinitions().addAll(apiDefinitions);
             banqueRepository.save(banque);
 
             return "Success";
@@ -159,41 +159,6 @@ public class ApiDefinitionServiceImpl implements ApiDefinitionService {
             }
         }
         return results;
-    }
-
-
-    @Override
-    public List<Object> getFromAllApi(Map<String, String> pathParams){
-
-
-        List<Banque> banques =  banqueRepository.findAll();
-        List<Object> results = new ArrayList<>();
-
-
-        for (Banque banque : banques) {
-            try {
-                ApiDefinition apiDefinition = apiDefinitionRepository
-                        .findByBanqueUuidAndName(banque.getUuid(), NameApi.GET_PRODUCT_BY_ACCOUNT_TYPE);
-
-                if (apiDefinition == null || apiDefinition.getUrl() == null) {
-                    log.warn("No API definition found for bank: {}", banque.getName());
-                    continue;
-                }
-
-                ResponseEntity<?> response = utils.getExecution(apiDefinition.getUrl(),pathParams);
-
-                if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                    results.add(response.getBody()); // ✅ Extract data here
-                } else {
-                    log.error("❌ Failed to fetch data for bank {}: {}", banque.getName(), response.getStatusCode());
-                }
-
-            } catch (Exception e) {
-                log.error("Error while fetching products for bank {}: {}", banque.getName(), e.getMessage());
-            }
-        }
-        return results;
-
     }
 
 

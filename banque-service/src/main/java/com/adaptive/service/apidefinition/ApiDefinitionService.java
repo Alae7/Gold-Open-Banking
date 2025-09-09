@@ -6,7 +6,6 @@ import com.adaptive.dto.apidefinition.ApiDefinitionResponseDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ApiDefinitionService {
 
@@ -25,5 +24,4 @@ public interface ApiDefinitionService {
 
     public List<Object> getFromAllApi();
 
-    public List<Object> getFromAllApi(Map<String, String> pathParams);
 }

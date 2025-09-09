@@ -26,7 +26,6 @@ public enum NameApi {
     /*   Product  */
 
     CREATE_PRODUCT,
-    GET_PRODUCT_BY_ACCOUNT_TYPE,
     GET_PRODUCT,
     GET_ALL_PRODUCT,
 

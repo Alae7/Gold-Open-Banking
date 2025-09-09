@@ -26,4 +26,6 @@ public class Product extends BaseModel {
 
     private Double  remboursement;
 
+    private int frequency;
+
 }

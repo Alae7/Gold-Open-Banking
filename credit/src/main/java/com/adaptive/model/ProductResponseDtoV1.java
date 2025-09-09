@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class ProductResponseDto {
+public class ProductResponseDtoV1 {
 
     private Double  montantDemande;
 
@@ -21,7 +21,11 @@ public class ProductResponseDto {
 
     private Double  remboursement;
 
+    private int frequency;
+
     private String uuid;
+
+    private String codeBank;
 
 
 }

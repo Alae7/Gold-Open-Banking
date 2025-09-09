@@ -1,11 +1,13 @@
 package com.adaptive.service;
 
+import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.CreditRequestDto;
 import com.adaptive.dto.CreditResponseDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
 import com.adaptive.mapper.CreditMapper;
+import com.adaptive.openFeinController.BanqueFeinClient;
 import com.adaptive.repository.CreditRepository;
 import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
@@ -29,6 +31,9 @@ public class CreditServiceImpl implements CreditService {
     @Autowired
     private CreditRepository creditRepository;
 
+    @Autowired
+    private BanqueFeinClient banqueFeinClient;
+
     @Override
     public CreditResponseDto findByUuid(String uuid) {
         return creditMapper.toResponseDto(creditRepository.findByUuid(uuid));
@@ -44,10 +49,11 @@ public class CreditServiceImpl implements CreditService {
 
         Credit credit = utils.create(creditRequestDto);
         creditRepository.save(credit);
-
+        ExecuteRequest request = Utils.createExecuteRequest(credit);
         if(utils.kycCredit(creditRequestDto)){
             // if scoring is good
             if (utils.amlCredit(creditRequestDto,credit.getMontantDemande())){
+                    banqueFeinClient.execute(request);
                     this.changeStatus(credit.getUuid(),CreditStatus.APPROUVE);
                     this.changeStatus(credit.getUuid(),CreditStatus.EN_COURS);
                     return creditMapper.toResponseDto(credit);

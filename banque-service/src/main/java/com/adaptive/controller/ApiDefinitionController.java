@@ -59,11 +59,4 @@ public class ApiDefinitionController {
 
     }
 
-    @GetMapping("/execute/{compteType}")
-    public List<Object> execute(@PathVariable("compteType") Map<String, String> pathParams) {
-
-        return apiDefinitionService.getFromAllApi(pathParams);
-
-    }
-
 }

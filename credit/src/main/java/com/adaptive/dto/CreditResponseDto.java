@@ -14,6 +14,7 @@ import java.util.List;
 @ToString
 public class CreditResponseDto {
 
+    private String uuid;
     private Long  compteRib;
     private Double  solde;
     private Long rib;

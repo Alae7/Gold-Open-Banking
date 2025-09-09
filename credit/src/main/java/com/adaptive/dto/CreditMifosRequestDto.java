@@ -1,11 +1,9 @@
-package com.adaptive.entity;
+package com.adaptive.dto;
 
 
+import com.adaptive.entity.CreditStatus;
+import com.adaptive.entity.Echeance;
 import com.adaptive.model.TypeCompte;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,8 +14,11 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@Entity
-public class Credit extends BaseModel {
+@ToString
+public class CreditMifosRequestDto {
+
+
+    private String uuid;
 
     private Double montantDemande;
 
@@ -25,23 +26,21 @@ public class Credit extends BaseModel {
 
     private Double remboursement;
 
-    private String typeCredit;
-
     private Integer duree;
 
+    private String typeCredit;
+
     private LocalDate dateDebut;
+
+    private CreditStatus status;
 
     private LocalDate dateFin;
 
     private Long compteRib;
 
-    private int frequency;
-
-    private String codeBank;
-
     private TypeCompte typeCompte;
 
-    @OneToMany(mappedBy = "credit" , cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Echeance> echeances;
+
+
 }

@@ -1,13 +1,16 @@
 package com.adaptive.utils;
 
+import com.adaptive.config.ExecuteRequest;
+import com.adaptive.dto.CreditMifosRequestDto;
 import com.adaptive.dto.CreditRequestDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
+import com.adaptive.entity.NameApi;
 import com.adaptive.model.AmlCredit;
 import com.adaptive.model.CnssRequestDto;
 import com.adaptive.model.GdiRequestDto;
-import com.adaptive.model.ProductResponseDto;
+import com.adaptive.model.ProductResponseDtoV1;
 import com.adaptive.openFeinController.ProductFeinClient;
 import com.adaptive.repository.EcheanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -77,7 +81,13 @@ public class Utils {
 
 
     public void createEcheance(Credit credit) {
-        for (int i = 1; i <= credit.getDuree(); i++) {
+
+        int k = 1 ;
+        if(credit.getFrequency() == 4){
+            k= 4;
+        }
+
+        for (int i = 1; i <= credit.getDuree();i = i + k) {
 
             LocalDate dateRemboursement = credit.getDateDebut().plusMonths(i);
             Echeance  e = new Echeance();
@@ -99,7 +109,7 @@ public class Utils {
      public Credit create(CreditRequestDto creditRequestDto) {
 
         Credit credit = new Credit();
-        ProductResponseDto productResponseDto = productFeinClient.findByUuid(creditRequestDto.getProductUuid());
+        ProductResponseDtoV1 productResponseDto = productFeinClient.findByUuidV1(creditRequestDto.getProductUuid());
         credit.setStatus(CreditStatus.DEMANDE);
         credit.setCompteRib(creditRequestDto.getCompteRib());
         credit.setDateDebut(LocalDate.now());
@@ -107,6 +117,8 @@ public class Utils {
         credit.setDuree(productResponseDto.getDuree());
         credit.setMontantDemande(productResponseDto.getMontantDemande());
         credit.setRemboursement(productResponseDto.getRemboursement());
+        credit.setFrequency(productResponseDto.getFrequency());
+        credit.setCodeBank(productResponseDto.getCodeBank());
         return credit;
     }
 
@@ -192,6 +204,38 @@ public class Utils {
 
     }
 
+
+    public static ExecuteRequest createExecuteRequest(Credit credit) {
+
+        ExecuteRequest executeRequest = new ExecuteRequest();
+        CreditMifosRequestDto creditMifosRequestDto = getCreditMifosRequestDto(credit);
+
+        executeRequest.setRequestBody(creditMifosRequestDto);
+        executeRequest.setNameApi(NameApi.CREATE_CREDIT);
+        executeRequest.setBanqueCode(credit.getCodeBank());
+
+        return executeRequest ;
+    }
+
+    private static CreditMifosRequestDto getCreditMifosRequestDto(Credit credit) {
+
+        CreditMifosRequestDto creditMifosRequestDto = new CreditMifosRequestDto();
+        creditMifosRequestDto.setCompteRib(credit.getCompteRib());
+        creditMifosRequestDto.setTypeCredit(credit.getTypeCredit());
+        creditMifosRequestDto.setDuree(credit.getDuree());
+        creditMifosRequestDto.setEcheances(credit.getEcheances());
+        creditMifosRequestDto.setRemboursement(credit.getRemboursement());
+        creditMifosRequestDto.setStatus(credit.getStatus());
+        creditMifosRequestDto.setDateDebut(credit.getDateDebut());
+        creditMifosRequestDto.setDateFin(credit.getDateFin());
+        creditMifosRequestDto.setUuid(credit.getUuid());
+        creditMifosRequestDto.setMontantDemande(credit.getMontantDemande());
+        creditMifosRequestDto.setTauxInteret(credit.getTauxInteret());
+        creditMifosRequestDto.setTypeCompte(credit.getTypeCompte());
+
+        return creditMifosRequestDto;
+
+    }
 
 
 }

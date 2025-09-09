@@ -3,9 +3,9 @@ package com.adaptive.utils;
 
 
 import com.adaptive.config.ExecuteRequest;
+import com.adaptive.dto.ProductRequestDto;
 import com.adaptive.dto.ProductResponseDto;
 import com.adaptive.entity.NameApi;
-import com.adaptive.entity.Product;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -72,6 +72,19 @@ public class Utils {
 
         return executeRequest;
 
+    }
+
+    public static double calculateMontantRembourse(ProductRequestDto product) {
+
+        double tauxMensuel = product.getTauxInteret() / product.getFrequency();
+        int nbPaiement = (product.getDuree() * product.getFrequency()) / 12;
+
+        if (tauxMensuel == 0) {
+            return product.getMontantDemande()/nbPaiement;
+        }
+
+        double facteur = Math.pow(1+tauxMensuel, nbPaiement);
+        return product.getMontantDemande() * (tauxMensuel * facteur) / (facteur - 1);
     }
 
 }

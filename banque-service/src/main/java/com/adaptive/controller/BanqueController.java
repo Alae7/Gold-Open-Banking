@@ -2,6 +2,10 @@ package com.adaptive.controller;
 
 import com.adaptive.dto.BanqueRequestDto;
 import com.adaptive.dto.BanqueResponseDto;
+import com.adaptive.entity.ApiDefinition;
+import com.adaptive.entity.Banque;
+import com.adaptive.repository.ApiDefinitionRepository;
+import com.adaptive.repository.BanqueRepository;
 import com.adaptive.service.BanqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

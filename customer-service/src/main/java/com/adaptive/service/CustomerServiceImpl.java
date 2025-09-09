@@ -58,15 +58,15 @@ public class CustomerServiceImpl implements CustomerService {
             customerRepository.save(customer);
             customerResponseDto = customerMapper.toResponseDto(customer);
             executeRequest = Utils.createExecuteRequest(customerResponseDto, code);
+            try {
+                banqueFeinClient.execute(executeRequest);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         customerResponseDto.setStat(status);
 
-        try {
-            banqueFeinClient.execute(executeRequest);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         return customerResponseDto;
 
 

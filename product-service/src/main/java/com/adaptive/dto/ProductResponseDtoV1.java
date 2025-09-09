@@ -9,19 +9,23 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class ProductRequestDto {
+public class ProductResponseDtoV1 {
 
     private Double  montantDemande;
 
     private Integer duree;
 
-    private String codeBank;
-
     private String  compteType;
 
     private Double tauxInteret;
 
+    private Double  remboursement;
+
     private int frequency;
+
+    private String uuid;
+
+    private String codeBank;
 
 
 }

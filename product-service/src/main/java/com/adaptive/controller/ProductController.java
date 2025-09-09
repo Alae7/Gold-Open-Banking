@@ -2,6 +2,7 @@ package com.adaptive.controller;
 
 import com.adaptive.dto.ProductRequestDto;
 import com.adaptive.dto.ProductResponseDto;
+import com.adaptive.dto.ProductResponseDtoV1;
 import com.adaptive.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,13 @@ public class ProductController {
 
     }
 
+    @GetMapping("/credit/{uuid}")
+    public ProductResponseDtoV1 findByUuidV1(@PathVariable("uuid") String uuid) {
+
+        return productService.findByUuidV1(uuid);
+
+    }
+
     @GetMapping("/banks")
     public List<Object> findAllBanks(){
         return productService.findAllFromBanks();
@@ -36,15 +44,10 @@ public class ProductController {
 
 
     @GetMapping("/banks/{uuid}")
-    public ResponseEntity<?> findByUuidFromBank(@PathVariable("uuid") String uuid ,@RequestBody String code){
+    public ResponseEntity<?> findByUuidFromBank(@PathVariable("uuid") String uuid ,@RequestParam String code){
 
         return productService.findByUuidFromBank(uuid,code);
 
-    }
-
-    @GetMapping("/banks/compte_type/{type}")
-    public List<Object> findByCompteTypeFromBanks(@PathVariable("type") String type){
-        return productService.findByCompteTypeFromBanks(type);
     }
 
 
@@ -63,9 +66,5 @@ public class ProductController {
 
     }
 
-    @GetMapping("/compte/{compteType}")
-    public List<ProductResponseDto> findByCompteType(@PathVariable("compteType") String compteType) {
-        return productService.findByCompteType(compteType);
-    }
 
 }

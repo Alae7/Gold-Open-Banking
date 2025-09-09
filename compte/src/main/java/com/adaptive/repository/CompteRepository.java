@@ -13,6 +13,5 @@ public interface CompteRepository extends JpaRepository<Compte, Long> {
     List<Compte> findAllByIsDeletedFalse();
     List<Compte> findByBanqueUuid(String banqueUuid);
     String findCustomerUuidByRib(Long rib);
-    boolean existsByNumCompte(Long numCompte);
 
 }

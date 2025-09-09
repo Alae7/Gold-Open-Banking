@@ -14,10 +14,8 @@ public interface CustomerMapper {
 
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 
-    @Mapping(source = "image.url", target = "image")
     CustomerResponseDto toResponseDto(Customer customer);
 
-    @Mapping(source = "image",target = "image",qualifiedByName = "createImage")
     Customer toEntity(CustomerRequestDto customerRequestDto);
 
     List<CustomerResponseDto> toResponseDtoList(List<Customer> customers);
