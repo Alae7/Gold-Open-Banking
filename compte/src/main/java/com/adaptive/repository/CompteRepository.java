@@ -12,6 +12,5 @@ public interface CompteRepository extends JpaRepository<Compte, Long> {
     Compte findByRib(Long rib);
     List<Compte> findAllByIsDeletedFalse();
     List<Compte> findByBanqueUuid(String banqueUuid);
-    String findCustomerUuidByRib(Long rib);
 
 }

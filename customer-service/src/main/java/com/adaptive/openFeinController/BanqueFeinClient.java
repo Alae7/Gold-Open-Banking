@@ -1,6 +1,7 @@
 package com.adaptive.openFeinController;
 
 import com.adaptive.config.ExecuteRequest;
+import com.adaptive.dto.BanqueResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,6 @@ public interface BanqueFeinClient {
     public ResponseEntity<?> execute(@RequestBody ExecuteRequest executeRequest);
 
     @GetMapping("/api/banque/code/{uuid}")
-    public String findCodeByUuid(@PathVariable("uuid") String uuid);
+    public BanqueResponseDto findCodeByUuid(@PathVariable("uuid") String uuid);
 
 }

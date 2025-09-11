@@ -12,7 +12,7 @@ public interface CustomerService {
 
     List<CustomerResponseDto> findAll();
 
-    CustomerResponseDto create(CustomerRequestDto customerRequestDto);
+    String  create(CustomerRequestDto customerRequestDto);
 
     String delete(String uuid);
 

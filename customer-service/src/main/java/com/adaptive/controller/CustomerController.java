@@ -45,7 +45,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerResponseDto createCustomer(@RequestBody CustomerRequestDto customerRequestDto) {
+    public String createCustomer(@RequestBody CustomerRequestDto customerRequestDto) {
 
         return customerService.create(customerRequestDto);
 

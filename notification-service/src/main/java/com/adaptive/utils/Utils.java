@@ -2,13 +2,13 @@ package com.adaptive.utils;
 
 
 
+import com.adaptive.dto.CustomerResponseDto;
 import com.adaptive.dto.NotificationRequestDto;
 import com.adaptive.dto.Notification_CompteRequestDto;
 import com.adaptive.entity.Notification;
 import com.adaptive.entity.NotificationCompte;
 import com.adaptive.mapper.NotificationMapper;
 import com.adaptive.model.CompteResponseDto;
-import com.adaptive.model.CustomerResponseDto;
 import com.adaptive.model.TransactionResponseDto;
 import com.adaptive.openFeinController.CompteFeinClient;
 import com.adaptive.openFeinController.CustomerFiegnClient;

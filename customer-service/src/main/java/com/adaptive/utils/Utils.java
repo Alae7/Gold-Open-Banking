@@ -13,27 +13,8 @@ public class Utils {
     public static ExecuteRequest createExecuteRequest(CustomerResponseDto customerResponseDto, String code){
 
         ExecuteRequest executeRequest = new ExecuteRequest();
-        ClientRequestDto clientRequestDto = createClientRequest(customerResponseDto);
-        executeRequest.setNameApi(NameApi.CREATE_CLIENT);
-        executeRequest.setBanqueCode(code);
-        executeRequest.setRequestBody(clientRequestDto);
-
-        return executeRequest;
-
-
-    }
-
-
-
-
-
-
-
-
-
-    private static ClientRequestDto createClientRequest(CustomerResponseDto customerResponseDto){
-
         ClientRequestDto clientRequestDto = new ClientRequestDto();
+
         clientRequestDto.setClientUuid(customerResponseDto.getUuid());
         clientRequestDto.setCity(customerResponseDto.getCity());
         clientRequestDto.setCin(customerResponseDto.getCin());
@@ -45,8 +26,11 @@ public class Utils {
         clientRequestDto.setPassword(customerResponseDto.getPassword());
         clientRequestDto.setBirthDate(customerResponseDto.getBirthDate());
 
-        return clientRequestDto;
+        executeRequest.setNameApi(NameApi.CREATE_CLIENT);
+        executeRequest.setBanqueCode(code);
+        executeRequest.setRequestBody(clientRequestDto);
 
+        return executeRequest;
     }
 
     public static CompteRequestDto createCompteRequest(String bankUuid, String clientUuid, TypeCompte typeCompte){

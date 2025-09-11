@@ -45,31 +45,37 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponseDto create(CustomerRequestDto customerRequestDto) {
-
-        ExecuteRequest executeRequest = new ExecuteRequest();
-        CustomerResponseDto customerResponseDto = new CustomerResponseDto();
+    public String create(CustomerRequestDto customerRequestDto) {
         Customer customer = customerMapper.toEntity(customerRequestDto);
-        String code = banqueFeinClient.findCodeByUuid(customerRequestDto.getBanqueUuid());
+        System.out.println("1. Created customer entity: " + customer.getUuid());
+
+        String code = banqueFeinClient.findCodeByUuid(customerRequestDto.getBanqueUuid()).getCode();
+        System.out.println("2. Got banque code: " + code);
+
         CompteRequestDto compteRequestDto = Utils.createCompteRequest(customerRequestDto.getBanqueUuid(),customer.getUuid(),customerRequestDto.getTypeCompte());
         boolean status = compteFeinClient.createCompte(compteRequestDto);
+        System.out.println("3. Compte creation status: " + status);
 
         if(status){
-            customerRepository.save(customer);
-            customerResponseDto = customerMapper.toResponseDto(customer);
-            executeRequest = Utils.createExecuteRequest(customerResponseDto, code);
+            System.out.println("4. Status is true, saving customer...");
+            customer = customerRepository.save(customer);
+            System.out.println("5. Customer saved with ID: " + customer.getId()); // Assuming you have an ID field
+
+            CustomerResponseDto customerResponseDto = customerMapper.toResponseDto(customer);
+            ExecuteRequest executeRequest = Utils.createExecuteRequest(customerResponseDto, code);
             try {
                 banqueFeinClient.execute(executeRequest);
+                System.out.println("6. Execute request successful");
             } catch (Exception e) {
+                System.out.println("6. Execute request failed: " + e.getMessage());
                 throw new RuntimeException(e);
             }
+        } else {
+            System.out.println("4. Status is FALSE - customer NOT saved!");
         }
 
-        customerResponseDto.setStat(status);
-
-        return customerResponseDto;
-
-
+        System.out.println("7. Returning UUID: " + customer.getUuid());
+        return customer.getUuid();
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Component
@@ -121,7 +122,6 @@ public class Utils {
         AccountRequestDto accountRequestDto =  new AccountRequestDto();
         accountRequestDto.setTypeAccount(compte.getTypeCompte());
         accountRequestDto.setClientUuid(compte.getCustomerUuid());
-        accountRequestDto.setCreateDateTime(compte.getCreateDateTime());
         executeRequest.setNameApi(NameApi.CREATE_ACCOUNT);
         executeRequest.setBanqueCode(banqueResponseDto.getCode());
         executeRequest.setRequestBody(accountRequestDto);
@@ -152,7 +152,8 @@ public class Utils {
         executeRequest.setPathParams(Map.of("rib", String.valueOf(compte.getRib())));
         ResponseEntity<?> response = banqueFeinClient.execute(executeRequest);
 
-        return (double) response.getBody();
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) response.getBody();
+        return (Double) map.get("solde");
 
     }
 }

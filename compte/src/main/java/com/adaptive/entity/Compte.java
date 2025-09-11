@@ -22,7 +22,7 @@ public class Compte extends BaseModel {
     @Column
     private TypeCompte  typeCompte;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String  banqueUuid;
 
 

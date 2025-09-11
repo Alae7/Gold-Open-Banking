@@ -60,8 +60,8 @@ public class BanqueServiceImpl implements BanqueService {
     }
 
     @Override
-    public String findCodeByUuid(String uuid) {
-        return banqueRepository.findCodeByUuid(uuid);
+    public BanqueResponseDto findCodeByUuid(String uuid) {
+        return banqueMapper.toResponseDto(banqueRepository.findCodeByUuid(uuid));
     }
 
 

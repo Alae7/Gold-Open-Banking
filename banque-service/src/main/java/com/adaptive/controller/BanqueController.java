@@ -56,7 +56,7 @@ public class BanqueController {
     }
 
     @GetMapping("/code/{uuid}")
-    public String findCodeByUuid(@PathVariable("uuid") String uuid) {
+    public BanqueResponseDto findCodeByUuid(@PathVariable("uuid") String uuid) {
 
         return banqueService.findCodeByUuid(uuid);
 

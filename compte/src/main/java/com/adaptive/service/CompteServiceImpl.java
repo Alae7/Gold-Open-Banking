@@ -58,24 +58,33 @@ public class CompteServiceImpl implements CompteService {
 
     @Override
     public boolean create(CompteRequestDto compteRequestDto) {
-
         try {
+            System.out.println("1. Creating compte for request: " + compteRequestDto);
 
-            BanqueResponseDto banque = banqueFeinClient.findByUuid(compteRequestDto.getBanqueUuid());
             Compte compte = compteMapper.toEntity(compteRequestDto);
+            System.out.println("2. Mapped to entity: " + compte);
+
             ExecuteRequest executeRequest = utils.createExecuteRequest(compte);
+            System.out.println("3. Created execute request: " + executeRequest);
+
             ResponseEntity<?> account = banqueFeinClient.execute(executeRequest);
+            System.out.println("4. Banque response: " + account.getStatusCode() + " - " + account.getBody());
+
             compte.setRib((Long) account.getBody());
-            compteRepository.save(compte);
+            System.out.println("5. Set RIB: " + compte.getRib());
+
+            Compte savedCompte = compteRepository.save(compte);
+            System.out.println("6. Saved compte with ID: " + savedCompte.getId());
+
             Notification_CompteRequestDto notificationRequestDtos = Utils.createNotificationRequestDto(compte);
-            kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType() , notificationRequestDtos );
+            kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType(), notificationRequestDtos);
+            System.out.println("7. Sent Kafka notification");
 
-
-
-
-            return Boolean.TRUE;
+            return true;
         } catch (Exception e) {
-            return Boolean.FALSE;
+            System.err.println("ERROR in compte creation: " + e.getMessage());
+            e.printStackTrace(); // This will show you exactly what's failing
+            return false;
         }
 
     }
@@ -169,7 +178,7 @@ public class CompteServiceImpl implements CompteService {
 
     @Override
     public String findCustomerUuidByRib(Long rib) {
-        return compteRepository.findCustomerUuidByRib(rib);
+        return compteRepository.findByRib(rib).getCustomerUuid();
     }
 
     @Override

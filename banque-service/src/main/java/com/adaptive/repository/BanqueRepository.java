@@ -10,5 +10,5 @@ public interface BanqueRepository extends MongoRepository<Banque, String> {
 
     Banque findByUuid(String uuid);
     Banque findByCode(String code);
-    String findCodeByUuid(String uuid);
+    Banque findCodeByUuid(String uuid);
 }

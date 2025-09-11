@@ -33,5 +33,7 @@ public class CustomerResponseDto {
 
     private String  city;
 
+    private boolean  stat;
+
 
 }
