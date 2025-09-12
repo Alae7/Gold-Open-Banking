@@ -1,12 +1,13 @@
 package com.adaptive.utils;
 
 
-import com.adaptive.dto.NotificationRequestDto;
-import com.adaptive.dto.TransactionRequestDto;
+import com.adaptive.dto.*;
+import com.adaptive.entity.Anomaly;
 import com.adaptive.entity.Transaction;
 import com.adaptive.model.CompteResponseDto;
 import com.adaptive.model.Status;
 import com.adaptive.openFeinController.CompteFeinClient;
+import com.adaptive.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -24,6 +27,8 @@ public class Utils {
     @Autowired
     private  CompteFeinClient compteFeinClient;
 
+    @Autowired
+    TransactionRepository   transactionRepository;
 
     public Status doTransaction(TransactionRequestDto transactionRequestDto){
 
@@ -141,5 +146,42 @@ public class Utils {
     }
 
 
+    public static Anomaly createAnomaly(AnomalyRequestDto anomalyRequestDto){
+
+        Anomaly anomaly = new Anomaly();
+
+        anomaly.setTransactionUuid(anomalyRequestDto.getTransactionUuid());
+        anomaly.setTele(anomalyRequestDto.getTele());
+        anomaly.setTraite(false);
+
+       return anomaly;
+    }
+
+
+    public AnomalyResponseDto getAnomaly(Anomaly anomaly){
+
+        AnomalyResponseDto anomalyResponseDto = new AnomalyResponseDto();
+        Transaction transaction = transactionRepository.findByUuid(anomaly.getTransactionUuid());
+        anomalyResponseDto.setId(anomaly.getId());
+        anomalyResponseDto.setAmount(transaction.getAmount());
+        anomalyResponseDto.setType(transaction.getType());
+        anomalyResponseDto.setTargetRib(transaction.getTargetRib());
+        anomalyResponseDto.setSourceRib(transaction.getSourceRib());
+        anomalyResponseDto.setCreateDateTime(transaction.getCreateDateTime());
+        anomalyResponseDto.setTele(anomaly.getTele());
+        anomalyResponseDto.setTraite(anomaly.isTraite());
+        return anomalyResponseDto;
+
+
+    }
+
+    public List<AnomalyResponseDto> getAnomaly(List<Anomaly> anomalies){
+
+        List<AnomalyResponseDto> anomalyResponseDtos = new ArrayList<>();
+        for (Anomaly anomaly : anomalies) {
+            anomalyResponseDtos.add(getAnomaly(anomaly));
+        }
+        return anomalyResponseDtos;
+    }
 
 }

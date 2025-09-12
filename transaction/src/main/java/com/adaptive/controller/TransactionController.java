@@ -1,9 +1,11 @@
 package com.adaptive.controller;
 
+import com.adaptive.dto.AnomalyResponseDto;
 import com.adaptive.dto.TransactionRequestDto;
 import com.adaptive.dto.TransactionResponseDto;
 import com.adaptive.entity.TypeTransaction;
 import com.adaptive.service.TransactionService;
+import com.adaptive.service.anomaly.AnomalyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,9 @@ public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private AnomalyService anomalyService;
 
 
     @GetMapping()
@@ -59,5 +64,28 @@ public class TransactionController {
         return transactionService.create(transactionRequestDto);
 
     }
+
+
+    @GetMapping("/anomaly/{id}")
+    public AnomalyResponseDto findAnomalyById(@PathVariable("id") Long id) {
+
+        return anomalyService.findByid(id);
+
+    }
+
+    @GetMapping("/anomaly")
+    public List<AnomalyResponseDto> findAllAnomaly() {
+
+        return anomalyService.findAll();
+
+    }
+
+    @GetMapping("/anomaly/{traite}")
+    public List<AnomalyResponseDto> findAllAnomalyTraite(@PathVariable("traite") boolean traite) {
+
+        return anomalyService.findAllIsTraite(traite);
+
+    }
+
 
 }

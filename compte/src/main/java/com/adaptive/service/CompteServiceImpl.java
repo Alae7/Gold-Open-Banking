@@ -80,6 +80,8 @@ public class CompteServiceImpl implements CompteService {
             kafkaTemplate.send("compte_topic", notificationRequestDtos.getNotificationType(), notificationRequestDtos);
             System.out.println("7. Sent Kafka notification");
 
+            activate(compte.getRib());
+
             return true;
         } catch (Exception e) {
             System.err.println("ERROR in compte creation: " + e.getMessage());
