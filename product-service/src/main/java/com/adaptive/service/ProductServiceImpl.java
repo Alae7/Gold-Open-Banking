@@ -11,7 +11,6 @@ import com.adaptive.mapper.ProductMapper;
 import com.adaptive.openFeinController.BanqueFeinClient;
 import com.adaptive.repository.ProductRepository;
 import com.adaptive.utils.Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +31,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private BanqueFeinClient banqueFeinClient;
-
-    @Autowired
-    ObjectMapper objectMapper;
 
 
     @Override
@@ -70,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponseDto create(ProductRequestDto productRequestDto) {
 
         Product product = productMapper.toProduct(productRequestDto);
+        product.setStatut(false);
         product.setRemboursement(Utils.calculateMontantRembourse(productRequestDto));
         product = productRepository.save(product);
         ExecuteRequest executeRequest = Utils.createExecuteRequest(productMapper.toResponseDto(product));

@@ -23,5 +23,4 @@ public class ProductRequestDto {
 
     private int frequency;
 
-
 }
