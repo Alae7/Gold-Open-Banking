@@ -17,7 +17,6 @@ public class CompteResponseDto {
 
     private String  customerUuid;
     private Double  solde;
-    private Long numCompte;
     private Long rib;
     private TypeCompte typeCompte;
     private StatusCompte Statut;

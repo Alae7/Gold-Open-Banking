@@ -1,17 +1,23 @@
 package com.adaptive.service;
 
+import com.adaptive.dto.CreditRequestDto;
+import com.adaptive.dto.CreditResponseDto;
 import com.adaptive.dto.EcheanceResponseDto;
+import com.adaptive.dto.Notification_CreditRequestDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.Echeance;
 import com.adaptive.entity.TypeTransaction;
+import com.adaptive.mapper.CreditMapper;
 import com.adaptive.mapper.EcheanceMapper;
 import com.adaptive.model.TransactionRequestDto;
 import com.adaptive.model.TransactionResponseDto;
 import com.adaptive.openFeinController.TransactionFeinClient;
 import com.adaptive.repository.CreditRepository;
 import com.adaptive.repository.EcheanceRepository;
+import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +36,13 @@ public class EcheanceServiceImpl implements EcheanceService {
 
     @Autowired
     private EcheanceMapper echeanceMapper;
+
+    @Autowired
+    private CreditMapper creditMapper;
+
+    @Autowired
+    private KafkaTemplate<String, Notification_CreditRequestDto> kafkaTemplate;
+
 
     @Autowired
     private TransactionFeinClient transactionFeinClient;
@@ -55,6 +68,7 @@ public class EcheanceServiceImpl implements EcheanceService {
 
             TransactionResponseDto transactionResponseDto = transactionFeinClient.createTransaction(transactionRequestDto);
             echeance.setPaye(transactionResponseDto.getStatus().equals("SUCCESS"));
+
             echeanceRepository.save(echeance);
 
         }

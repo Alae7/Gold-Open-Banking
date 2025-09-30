@@ -3,6 +3,8 @@ package com.adaptive.utils;
 import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.CreditMifosRequestDto;
 import com.adaptive.dto.CreditRequestDto;
+import com.adaptive.dto.CreditResponseDto;
+import com.adaptive.dto.Notification_CreditRequestDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
@@ -234,6 +236,26 @@ public class Utils {
         creditMifosRequestDto.setTypeCompte(credit.getTypeCompte());
 
         return creditMifosRequestDto;
+
+    }
+
+
+    public static Notification_CreditRequestDto getNotification_CreditRequestDto(CreditResponseDto creditResponseDto) {
+
+        Notification_CreditRequestDto notification_CreditRequestDto = new Notification_CreditRequestDto();
+        notification_CreditRequestDto.setTypeCredit(creditResponseDto.getTypeCredit());
+        notification_CreditRequestDto.setCompteRib(creditResponseDto.getCompteRib());
+        notification_CreditRequestDto.setCreditUuid(creditResponseDto.getUuid());
+        notification_CreditRequestDto.setEcheanceResponseDtos(creditResponseDto.getEcheanceResponseDtos());
+        switch (creditResponseDto.getStatut()) {
+
+            case REFUSE -> notification_CreditRequestDto.setNotificationType("CREDIT REFUSED");
+            case TERMINE -> notification_CreditRequestDto.setNotificationType("CREDIT TERMINATED");
+            case APPROUVE, DEMANDE -> notification_CreditRequestDto.setNotificationType("CREDIT APPROVED");
+            case EN_COURS ->  notification_CreditRequestDto.setNotificationType("CREDIT EN COURS");
+            default -> notification_CreditRequestDto.setNotificationType("CREDIT UNKNOWN");
+        }
+        return notification_CreditRequestDto;
 
     }
 

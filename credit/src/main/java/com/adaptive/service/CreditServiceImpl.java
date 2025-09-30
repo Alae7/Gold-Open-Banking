@@ -3,6 +3,7 @@ package com.adaptive.service;
 import com.adaptive.config.ExecuteRequest;
 import com.adaptive.dto.CreditRequestDto;
 import com.adaptive.dto.CreditResponseDto;
+import com.adaptive.dto.Notification_CreditRequestDto;
 import com.adaptive.entity.Credit;
 import com.adaptive.entity.CreditStatus;
 import com.adaptive.entity.Echeance;
@@ -12,6 +13,7 @@ import com.adaptive.repository.CreditRepository;
 import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class CreditServiceImpl implements CreditService {
 
     @Autowired
     private CreditMapper creditMapper;
+
+    @Autowired
+    private KafkaTemplate<String, Notification_CreditRequestDto> kafkaTemplate;
+
 
     @Autowired
     private Utils utils;
@@ -61,7 +67,11 @@ public class CreditServiceImpl implements CreditService {
         }
         // if scoring or kyc is bad
         this.changeStatus(credit.getUuid(),CreditStatus.REFUSE);
-        return creditMapper.toResponseDto(credit);
+        CreditResponseDto creditResponseDto = creditMapper.toResponseDto(credit);
+
+        Notification_CreditRequestDto notification_CreditRequestDto = Utils.getNotification_CreditRequestDto(creditResponseDto);
+        kafkaTemplate.send("credit_topic",notification_CreditRequestDto.getNotificationType() ,notification_CreditRequestDto);
+        return creditResponseDto;
     }
 
     public void changeStatus(String uuid, CreditStatus creditStatus) {
@@ -90,7 +100,8 @@ public class CreditServiceImpl implements CreditService {
 
             if (allPaid) {
                 credit.setStatus(CreditStatus.TERMINE);
-                creditRepository.save(credit);
+                credit = creditRepository.save(credit);
+                CreditResponseDto creditResponseDto = creditMapper.toResponseDto(credit);
                 System.out.println("✅ Credit ID " + credit.getId() + " marked as TERMINÉ.");
             }
         }

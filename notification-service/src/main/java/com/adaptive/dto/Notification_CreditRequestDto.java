@@ -1,10 +1,7 @@
 package com.adaptive.dto;
 
-
-import com.adaptive.entity.CreditStatus;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,15 +10,12 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class CreditResponseDto {
+public class Notification_CreditRequestDto {
 
-    private String uuid;
     private Long  compteRib;
     private String typeCredit;
-    private String  typeCompte;
-    private CreditStatus Statut;
-    private LocalDateTime createDateTime;
+    private Double montantDemande;
+    private String notificationType;
     private List<EcheanceResponseDto> echeanceResponseDtos;
-
 
 }

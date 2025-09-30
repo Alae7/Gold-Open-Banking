@@ -19,9 +19,13 @@ public class ProductResponseDto {
 
     private Double tauxInteret;
 
+    private String description;
+
     private Double  remboursement;
 
     private String uuid;
+
+    private String codeBank;
 
 
 }

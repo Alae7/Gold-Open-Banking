@@ -4,11 +4,14 @@ package com.adaptive.service;
 import com.adaptive.dto.CustomerResponseDto;
 import com.adaptive.dto.NotificationRequestDto;
 import com.adaptive.dto.Notification_CompteRequestDto;
+import com.adaptive.dto.Notification_CreditRequestDto;
 import com.adaptive.entity.Notification;
 import com.adaptive.entity.NotificationCompte;
+import com.adaptive.entity.NotificationCredit;
 import com.adaptive.model.CompteResponseDto;
 import com.adaptive.model.TransactionResponseDto;
 import com.adaptive.repository.NotificationCompteRepository;
+import com.adaptive.repository.NotificationCreditRepository;
 import com.adaptive.repository.NotificationRepository;
 import com.adaptive.utils.Utils;
 import jakarta.transaction.Transactional;
@@ -29,6 +32,9 @@ public class NotificationServiceImpl{
 
     @Autowired
     private NotificationCompteRepository notificationCompteRepository;
+
+    @Autowired
+    private NotificationCreditRepository notificationCreditRepository;
 
     @Autowired
     private Utils utils;
@@ -89,6 +95,22 @@ public class NotificationServiceImpl{
         notificationCompteRepository.save(notificationCompte);
         System.out.println(notificationCompte.getStatus());
 
+
+    }
+
+    @KafkaListener(topics = "credit_topic", groupId = "my-gold")
+    public void processCreditEvent(@Header(KafkaHeaders.RECEIVED_KEY) String key, @Payload Notification_CreditRequestDto notificationCreditRequestDto) {
+
+        CompteResponseDto compteResponseDto = utils.getCompte(notificationCreditRequestDto.getCompteRib());
+        CustomerResponseDto customerResponseDto = utils.getClient(compteResponseDto.getRib());
+
+        NotificationCredit notificationCredit = utils.createNotificationCredit(notificationCreditRequestDto);
+
+        notificationCredit.setStatus(utils.sendCreditMessage(compteResponseDto,notificationCreditRequestDto));
+
+        notificationCreditRepository.save(notificationCredit);
+
+        System.out.println(notificationCredit.getStatus());
 
     }
 

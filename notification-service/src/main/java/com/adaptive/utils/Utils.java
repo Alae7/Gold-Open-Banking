@@ -5,8 +5,10 @@ package com.adaptive.utils;
 import com.adaptive.dto.CustomerResponseDto;
 import com.adaptive.dto.NotificationRequestDto;
 import com.adaptive.dto.Notification_CompteRequestDto;
+import com.adaptive.dto.Notification_CreditRequestDto;
 import com.adaptive.entity.Notification;
 import com.adaptive.entity.NotificationCompte;
+import com.adaptive.entity.NotificationCredit;
 import com.adaptive.mapper.NotificationMapper;
 import com.adaptive.model.CompteResponseDto;
 import com.adaptive.model.TransactionResponseDto;
@@ -376,5 +378,4 @@ public class Utils {
 
         mailSender.send(message);
     }
-
 }
